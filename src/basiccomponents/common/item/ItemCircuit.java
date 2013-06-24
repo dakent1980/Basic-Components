@@ -2,10 +2,9 @@ package basiccomponents.common.item;
 
 import java.util.List;
 
-import basiccomponents.common.BasicComponents;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import basiccomponents.common.BasicComponents;
 
 public class ItemCircuit extends ItemBase
 {
