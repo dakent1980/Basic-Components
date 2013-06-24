@@ -160,7 +160,7 @@ public class BasicComponents
 
 	private static boolean registeredTileEntities = false;
 
-	public static final ArrayList bcGuiManagers = new ArrayList();
+	public static final ArrayList bcDependants = new ArrayList();
 
 	private static int NEXT_BLOCK_ID = BLOCK_ID_PREFIX;
 	private static int NEXT_ITEM_ID = ITEM_ID_PREFIX;
@@ -493,7 +493,7 @@ public class BasicComponents
         
         if (mod != null)
         {
-            bcGuiManagers.add(mod);
+            bcDependants.add(mod);
             NetworkRegistry.instance().registerGuiHandler(mod, new BCGuiHandler());
         }
 
@@ -616,11 +616,11 @@ public class BasicComponents
 		requireMachines(mod, 0);
 	}
 
-	public static Object getFirstGuiManager()
+	public static Object getFirstDependant()
 	{
-		if (bcGuiManagers.size() > 0)
+		if (bcDependants.size() > 0)
 		{
-			return bcGuiManagers.get(0);
+			return bcDependants.get(0);
 		}
 
 		return null;
