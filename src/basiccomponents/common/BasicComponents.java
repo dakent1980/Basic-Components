@@ -58,6 +58,8 @@ public class BasicComponents
 
 	public static final String RESOURCE_PATH = "/mods/basiccomponents/";
 
+	public static CommonProxy proxy;
+
 	/**
 	 * The Universal Electricity configuration file.
 	 */
