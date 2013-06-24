@@ -160,7 +160,7 @@ public class BasicComponents
 
 	private static boolean registeredTileEntities = false;
 
-	public static final ArrayList bcGuiManagers = new ArrayList();
+	public static final ArrayList bcDependants = new ArrayList();
 
 	private static int NEXT_BLOCK_ID = BLOCK_ID_PREFIX;
 	private static int NEXT_ITEM_ID = ITEM_ID_PREFIX;
@@ -453,8 +453,22 @@ public class BasicComponents
 		return requestItem("infiniteBattery", id);
 	}
 
-	public static ItemStack requireMachines(int id)
-	{
+    /**
+     *  Kept for backwards compatibility
+     */
+    @Deprecated
+    public static ItemStack requireMachines(int id)
+    {
+        return requireMachines(null, id);
+    }
+    
+    /**
+     *  Require Battery Box, Coal Generator and Electric Furnace. Adds mod object to list of GUI managers as well.
+     * 
+     * @param mod The object of the mod requiring machines
+     */
+    public static ItemStack requireMachines(Object mod, int id)
+    {
 		if (blockMachine == null)
 		{
 			id = id <= 0 ? idMachine : id;
@@ -476,6 +490,12 @@ public class BasicComponents
 
 			BasicComponents.CONFIGURATION.save();
 		}
+        
+        if (mod != null)
+        {
+            bcDependants.add(mod);
+            NetworkRegistry.instance().registerGuiHandler(mod, new BCGuiHandler());
+        }
 
 		return new ItemStack(blockMachine);
 	}
@@ -496,18 +516,21 @@ public class BasicComponents
 		}
 	}
 
-	/**
-	 * Called when all items are registered. Only call once per mod.
-	 */
-	public static void register(Object mod, String channel)
-	{
+    /**
+     *  Kept for backwards compatibility
+     */
+    @Deprecated
+    public static void register(Object mod, String channel)
+    {
+        register(channel);
+    }
+    
+    /**
+     * Called when all items are registered. Only call once per mod.
+     */
+    public static void register(String channel)
+    {
 		CHANNEL = channel;
-
-		if (registeredTileEntities && blockMachine != null)
-		{
-	        bcGuiManagers.add(mod);
-			NetworkRegistry.instance().registerGuiHandler(mod, new BCGuiHandler());
-		}
 
 		/**
 		 * Register Smelting Recipes
@@ -544,11 +567,22 @@ public class BasicComponents
 		}
 	}
 
-	/**
-	 * Requests all items in Basic Components
-	 */
-	public static void requestAll()
-	{
+    /**
+     *  Kept for backwards compatibility
+     */
+    @Deprecated
+    public static void requestAll()
+    {
+        requestAll(null);
+    }
+    
+    /**
+     * Requests all items in Basic Components
+     * 
+     * @param mod The object of the mod requiring components
+     */
+    public static void requestAll(Object mod)
+    {
 		BasicComponents.requestItem("ingotCopper", 0);
 		BasicComponents.requestItem("ingotTin", 0);
 
@@ -579,14 +613,14 @@ public class BasicComponents
 		BasicComponents.requestItem("battery", 0);
 		BasicComponents.requestItem("infiniteBattery", 0);
 
-		requireMachines(0);
+		requireMachines(mod, 0);
 	}
 
-	public static Object getFirstGuiManager()
+	public static Object getFirstDependant()
 	{
-		if (bcGuiManagers.size() > 0)
+		if (bcDependants.size() > 0)
 		{
-			return bcGuiManagers.get(0);
+			return bcDependants.get(0);
 		}
 
 		return null;
