@@ -237,7 +237,7 @@ public class BasicComponents
 
 					if (itemIngot != null)
 					{
-						GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(itemIngot, 4), item));
+                        GameRegistry.addRecipe(new ShapelessOreRecipe(item, new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot)));
 					}
 				}
 				else if (name.contains("dust"))
