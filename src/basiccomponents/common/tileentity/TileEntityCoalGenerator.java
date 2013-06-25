@@ -15,7 +15,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConductor;
+import universalelectricity.core.block.IOldConductor;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
@@ -51,7 +51,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 	 */
 	public double prevGenerateWatts, generateWatts = 0;
 
-	public IConductor connectedElectricUnit = null;
+	public IOldConductor connectedElectricUnit = null;
 	/**
 	 * The number of ticks that a fresh copy of the currently-burning item would keep the furnace
 	 * burning for
@@ -89,7 +89,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 			{
 				if (network.getRequest().getWatts() > 0)
 				{
-					this.connectedElectricUnit = (IConductor) outputTile;
+					this.connectedElectricUnit = (IOldConductor) outputTile;
 				}
 				else
 				{

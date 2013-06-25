@@ -401,8 +401,7 @@ public class BasicComponents
 					}
 
 					GameRegistry.registerTileEntity(TileEntityCopperWire.class, "copperWire");
-					// proxy.registerCopperWireTileEntity();
-
+					
 					GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCopperWire, 6), new Object[] { "WWW", "CCC", "WWW", 'W', Block.cloth, 'C', "ingotCopper" }));
 
 					UniversalElectricity.isNetworkActive = true;

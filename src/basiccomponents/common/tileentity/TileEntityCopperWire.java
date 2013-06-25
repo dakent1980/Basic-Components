@@ -1,8 +1,10 @@
 package basiccomponents.common.tileentity;
 
 import net.minecraft.block.Block;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.prefab.tile.TileEntityConductor;
 import basiccomponents.common.BasicComponents;
+import buildcraft.api.power.PowerProvider;
 
 public class TileEntityCopperWire extends TileEntityConductor
 {

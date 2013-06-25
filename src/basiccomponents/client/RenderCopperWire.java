@@ -23,32 +23,34 @@ public class RenderCopperWire extends TileEntitySpecialRenderer
 		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 
-		if (tileEntity.visuallyConnected[0])
+		TileEntity[] visuallyConnected = tileEntity.getAdjacentConnections();
+
+		if (visuallyConnected[0] != null)
 		{
 			model.renderBottom();
 		}
 
-		if (tileEntity.visuallyConnected[1])
+		if (visuallyConnected[1] != null)
 		{
 			model.renderTop();
 		}
 
-		if (tileEntity.visuallyConnected[2])
+		if (visuallyConnected[2] != null)
 		{
 			model.renderBack();
 		}
 
-		if (tileEntity.visuallyConnected[3])
+		if (visuallyConnected[3] != null)
 		{
 			model.renderFront();
 		}
 
-		if (tileEntity.visuallyConnected[4])
+		if (visuallyConnected[4] != null)
 		{
 			model.renderLeft();
 		}
 
-		if (tileEntity.visuallyConnected[5])
+		if (visuallyConnected[5] != null)
 		{
 			model.renderRight();
 		}
