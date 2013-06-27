@@ -239,6 +239,7 @@ public class BasicComponents
 					if (itemIngot != null)
 					{
 						RecipeHelper.addRecipe(new ShapelessOreRecipe(new ItemStack(itemIngot, 4), item), CONFIGURATION, true);
+						RecipeHelper.addRecipe(new ShapelessOreRecipe(item, new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot)), CONFIGURATION, true);
 					}
 				}
 				else if (name.contains("dust"))
