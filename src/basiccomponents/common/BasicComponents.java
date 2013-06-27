@@ -16,6 +16,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.prefab.RecipeHelper;
 import universalelectricity.prefab.TranslationHelper;
 import universalelectricity.prefab.ore.OreGenBase;
 import universalelectricity.prefab.ore.OreGenReplaceStone;
@@ -217,7 +218,7 @@ public class BasicComponents
 					Item item = (Item) field.get(null);
 
 					String ingotName = name.replaceAll("plate", "ingot");
-					GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!!", "!!", '!', ingotName));
+					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!!", "!!", '!', ingotName), CONFIGURATION, true);
 
 					Item itemIngot = null;
 
@@ -237,7 +238,7 @@ public class BasicComponents
 
 					if (itemIngot != null)
 					{
-						GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(itemIngot, 4), item));
+						RecipeHelper.addRecipe(new ShapelessOreRecipe(new ItemStack(itemIngot, 4), item), CONFIGURATION, true);
 					}
 				}
 				else if (name.contains("dust"))
@@ -247,7 +248,7 @@ public class BasicComponents
 
 					if (name.equals("dustBronze"))
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", '!', "ingotCopper", '#', "ingotTin"));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", '!', "ingotCopper", '#', "ingotTin"), CONFIGURATION, true);
 
 						if (OreDictionary.getOres("ingotBronze").size() > 0)
 						{
@@ -256,7 +257,7 @@ public class BasicComponents
 					}
 					else if (name.equals("dustSteel"))
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), " C ", "CIC", " C ", 'I', Item.ingotIron, 'C', Item.coal));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), " C ", "CIC", " C ", 'I', Item.ingotIron, 'C', Item.coal), CONFIGURATION, true);
 
 						if (OreDictionary.getOres("ingotSteel").size() > 0)
 						{
@@ -271,17 +272,17 @@ public class BasicComponents
 
 					if (OreDictionary.getOres("ingotSteel").size() > 0)
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), " S ", " SS", "S  ", 'S', "ingotSteel"));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), " S ", " SS", "S  ", 'S', "ingotSteel"), CONFIGURATION, true);
 					}
 					else
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), " S ", " SS", "S  ", 'S', Item.ingotIron));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), " S ", " SS", "S  ", 'S', Item.ingotIron), CONFIGURATION, true);
 					}
 				}
 				else if (name.equals("battery"))
 				{
 					field.set(null, new ItemBattery(name, id));
-					GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemBattery), " T ", "TRT", "TCT", 'T', "ingotTin", 'R', Item.redstone, 'C', Item.coal));
+					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(itemBattery), " T ", "TRT", "TCT", 'T', "ingotTin", 'R', Item.redstone, 'C', Item.coal), CONFIGURATION, true);
 					OreDictionary.registerOre(name, ElectricItemHelper.getUncharged(BasicComponents.itemBattery));
 				}
 				else if (name.equals("infiniteBattery"))
@@ -299,32 +300,32 @@ public class BasicComponents
 					{
 						if (OreDictionary.getOres("copperWire").size() > 0)
 						{
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateBronze", '#', Item.redstone, '!', "copperWire"));
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateSteel", '#', Item.redstone, '!', "copperWire"));
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateBronze", '#', Item.redstone, '!', "copperWire"), CONFIGURATION, true);
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateSteel", '#', Item.redstone, '!', "copperWire"), CONFIGURATION, true);
 						}
 						else
 						{
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateBronze", '#', Item.redstone, '!', Block.redstoneComparatorIdle));
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateSteel", '#', Item.redstone, '!', Block.redstoneComparatorIdle));
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateBronze", '#', Item.redstone, '!', Block.redstoneComparatorIdle), CONFIGURATION, true);
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!#!", "#@#", "!#!", '@', "plateSteel", '#', Item.redstone, '!', Block.redstoneComparatorIdle), CONFIGURATION, true);
 						}
 					}
 					else if (name.equals("circuitAdvanced"))
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@@@", "#?#", "@@@", '@', Item.redstone, '?', Item.diamond, '#', "circuitBasic"));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@@@", "#?#", "@@@", '@', Item.redstone, '?', Item.diamond, '#', "circuitBasic"), CONFIGURATION, true);
 					}
 					else if (name.equals("circuitElite"))
 					{
-						GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@@@", "?#?", "@@@", '@', Item.ingotGold, '?', "circuitAdvanced", '#', Block.blockLapis));
+						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@@@", "?#?", "@@@", '@', Item.ingotGold, '?', "circuitAdvanced", '#', Block.blockLapis), CONFIGURATION, true);
 					}
 					else if (name.equals("motor"))
 					{
 						if (OreDictionary.getOres("copperWire").size() > 0)
 						{
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@!@", "!#!", "@!@", '!', "ingotSteel", '#', Item.ingotIron, '@', "copperWire"));
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@!@", "!#!", "@!@", '!', "ingotSteel", '#', Item.ingotIron, '@', "copperWire"), CONFIGURATION, true);
 						}
 						else
 						{
-							GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@!@", "!#!", "@!@", '!', "ingotSteel", '#', Item.ingotIron, '@', Block.redstoneComparatorIdle));
+							RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "@!@", "!#!", "@!@", '!', "ingotSteel", '#', Item.ingotIron, '@', Block.redstoneComparatorIdle), CONFIGURATION, true);
 						}
 					}
 				}
@@ -403,7 +404,7 @@ public class BasicComponents
 					GameRegistry.registerTileEntity(TileEntityCopperWire.class, "copperWire");
 					// proxy.registerCopperWireTileEntity();
 
-					GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCopperWire, 6), new Object[] { "WWW", "CCC", "WWW", 'W', Block.cloth, 'C', "ingotCopper" }));
+					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(blockCopperWire, 6), new Object[] { "WWW", "CCC", "WWW", 'W', Block.cloth, 'C', "ingotCopper" }), CONFIGURATION, true);
 
 					UniversalElectricity.isNetworkActive = true;
 				}
@@ -502,12 +503,12 @@ public class BasicComponents
 			OreDictionary.registerOre("electricFurnace", ((BlockBasicMachine) BasicComponents.blockMachine).getElectricFurnace());
 
 			// Battery Box
-			GameRegistry.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("batteryBox").get(0), new Object[] { "SSS", "BBB", "SSS", 'B', "battery", 'S', "ingotSteel" }));
+			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("batteryBox").get(0), new Object[] { "SSS", "BBB", "SSS", 'B', "battery", 'S', "ingotSteel" }), CONFIGURATION, true);
 			// Coal Generator
-			GameRegistry.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotSteel", 'C', "motor", 'O', Block.furnaceIdle }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotBronze", 'C', "motor", 'O', Block.furnaceIdle }));
+			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotSteel", 'C', "motor", 'O', Block.furnaceIdle }), CONFIGURATION, true);
+			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotBronze", 'C', "motor", 'O', Block.furnaceIdle }), CONFIGURATION, true);
 			// Electric Furnace
-			GameRegistry.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("electricFurnace").get(0), new Object[] { "SSS", "SCS", "SMS", 'S', "ingotSteel", 'C', "circuitAdvanced", 'M', "motor" }));
+			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("electricFurnace").get(0), new Object[] { "SSS", "SCS", "SMS", 'S', "ingotSteel", 'C', "circuitAdvanced", 'M', "motor" }), CONFIGURATION, true);
 
 			BasicComponents.CONFIGURATION.save();
 		}
