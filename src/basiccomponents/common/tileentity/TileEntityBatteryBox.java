@@ -1,6 +1,5 @@
 package basiccomponents.common.tileentity;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +14,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.block.IEnergyStorage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.IElectricityNetwork;
@@ -34,7 +34,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityBatteryBox extends TileEntityElectricalStorage implements IElectrical, IPacketReceiver, ISidedInventory
+public class TileEntityBatteryBox extends TileEntityElectricalStorage implements IElectrical, IEnergyStorage, IPacketReceiver, ISidedInventory
 {
 	private ItemStack[] containingItems = new ItemStack[2];
 
@@ -60,21 +60,12 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 				this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dechargeItem(this.containingItems[1], this.getMaxEnergyStored() - this.getEnergyStored(), this.getVoltage()));
 
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
-				TileEntity inputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection.getOpposite());
 				TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
-
-				IElectricityNetwork inputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(inputTile, outputDirection.getOpposite());
 				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
-
-				if (outputNetwork != null && inputNetwork != outputNetwork)
+				
+				if(outputNetwork != null)
 				{
-					float outputWatts = Math.min(outputNetwork.getRequest(this), Math.min(this.getEnergyStored(), 10000));
-
-					if (this.getEnergyStored() > 0 && outputWatts > 0)
-					{
-						outputNetwork.produce(ElectricityPack.getFromWatts(outputWatts, this.getVoltage()));
-						this.setEnergyStored(this.getEnergyStored() - outputWatts);
-					}
+					this.setEnergyStored(this.getEnergyStored() - outputNetwork.produce(ElectricityPack.getFromWatts(Math.min(this.getEnergyStored(), 2500), getVoltage()), this));
 				}
 			}
 		}
@@ -82,7 +73,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 		/**
 		 * Gradually lose energy.
 		 */
-		this.setEnergyStored(this.getEnergyStored() - 0.00005f);
+		this.setEnergyStored(this.getEnergyStored() - 0.00005F);
 
 		if (!this.worldObj.isRemote)
 		{
@@ -94,36 +85,6 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 				}
 			}
 		}
-	}
-
-	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
-	{
-		float newStoredEnergy = Math.min(this.getEnergyStored() + electricityPack.getWatts(), this.getMaxEnergyStored());
-
-		if (doReceive)
-		{
-			this.setEnergyStored(newStoredEnergy);
-		}
-
-		return Math.max(electricityPack.getWatts() - newStoredEnergy, 0);
-	}
-
-	@Override
-	public float getRequest()
-	{
-		return 0;
-	}
-
-	@Override
-	public float getVoltage()
-	{
-		return 120;
-	}
-
-	protected EnumSet<ForgeDirection> getConsumingSides()
-	{
-		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite());
 	}
 
 	@Override
@@ -296,12 +257,6 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	}
 
 	@Override
-	public float getMaxEnergyStored()
-	{
-		return 5000000;
-	}
-
-	@Override
 	public boolean isInvNameLocalized()
 	{
 		return true;
@@ -320,38 +275,62 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	}
 
 	@Override
-	public boolean canInsertItem(int slotID, ItemStack itemStack, int side)
+	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
 	{
-		if (this.isStackValidForSlot(slotID, itemStack))
+		if (this.isStackValidForSlot(slotID, itemstack))
 		{
 			if (slotID == 0)
 			{
-				return ((IItemElectric) itemStack.getItem()).receiveEnergy(itemStack, 1, false) > 0;
+				return ((IItemElectric) itemstack.getItem()).getTransfer(itemstack) > 0;
 			}
 			else if (slotID == 1)
 			{
-				return ((IItemElectric) itemStack.getItem()).transferEnergy(itemStack, 1, false) > 0;
+				return ((IItemElectric) itemstack.getItem()).getEnergyStored(itemstack) > 0;
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemStack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if (this.isStackValidForSlot(slotID, itemStack))
+		if (this.isStackValidForSlot(slotID, itemstack))
 		{
 			if (slotID == 0)
 			{
-				return ((IItemElectric) itemStack.getItem()).receiveEnergy(itemStack, 1, false) > 0;
+				return ((IItemElectric) itemstack.getItem()).getTransfer(itemstack) <= 0;
 			}
 			else if (slotID == 1)
 			{
-				return ((IItemElectric) itemStack.getItem()).transferEnergy(itemStack, 1, false) > 0;
+				return ((IItemElectric) itemstack.getItem()).getEnergyStored(itemstack) <= 0;
 			}
 		}
 
 		return false;
 
+	}
+
+	@Override
+	public float getMaxEnergyStored()
+	{
+		return 5000000;
+	}
+
+	@Override
+	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive) 
+	{
+		return 0;
+	}
+
+	@Override
+	public float getRequest() 
+	{
+		return Math.min(getEnergyStored(), 2500);
+	}
+
+	@Override
+	public float getVoltage() 
+	{
+		return 120;
 	}
 }

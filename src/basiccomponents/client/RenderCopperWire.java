@@ -2,9 +2,13 @@ package basiccomponents.client;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import universalelectricity.core.block.IConnector;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.tileentity.TileEntityCopperWire;
 import cpw.mods.fml.relauncher.Side;
@@ -22,35 +26,48 @@ public class RenderCopperWire extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
+		
+		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			TileEntity sideTile = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity), side);
+			
+			if(sideTile instanceof IConnector)
+			{
+				if(((IConnector)sideTile).canConnect(side.getOpposite()))
+				{
+					connectable[side.ordinal()] = true;
+				}
+			}
+		}
 
-		TileEntity[] visuallyConnected = tileEntity.getAdjacentConnections();
-
-		if (visuallyConnected[0] != null)
+		if (connectable[0])
 		{
 			model.renderBottom();
 		}
 
-		if (visuallyConnected[1] != null)
+		if (connectable[1])
 		{
 			model.renderTop();
 		}
 
-		if (visuallyConnected[2] != null)
+		if (connectable[2])
 		{
 			model.renderBack();
 		}
 
-		if (visuallyConnected[3] != null)
+		if (connectable[3])
 		{
 			model.renderFront();
 		}
 
-		if (visuallyConnected[4] != null)
+		if (connectable[4])
 		{
 			model.renderLeft();
 		}
 
-		if (visuallyConnected[5] != null)
+		if (connectable[5])
 		{
 			model.renderRight();
 		}

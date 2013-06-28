@@ -14,12 +14,13 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityElectricityRunnable;
+import universalelectricity.prefab.tile.TileEntityDisableable;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
 
@@ -29,17 +30,22 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityElectricFurnace extends TileEntityElectricityRunnable implements IInventory, ISidedInventory, IPacketReceiver
+public class TileEntityElectricFurnace extends TileEntityDisableable implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
 {
 	/**
 	 * The amount of watts required every TICK.
 	 */
-	public static final double WATTS_PER_TICK = 500;
+	public static final float WATTS_PER_TICK = 500;
 
 	/**
 	 * The amount of processing time required.
 	 */
 	public static final int PROCESS_TIME_REQUIRED = 130;
+	
+	/**
+	 * The buffer of energy this Electric Furnace has stored. 
+	 */
+	public float energyBuffer;
 
 	/**
 	 * The amount of ticks this machine has been processing.
@@ -64,7 +70,10 @@ public class TileEntityElectricFurnace extends TileEntityElectricityRunnable imp
 		/**
 		 * Attempts to charge using batteries.
 		 */
-		this.wattsReceived += ElectricItemHelper.dechargeItem(this.containingItems[0], WATTS_PER_TICK, this.getVoltage());
+		if(energyBuffer < WATTS_PER_TICK)
+		{
+			this.energyBuffer += ElectricItemHelper.dechargeItem(this.containingItems[0], getRequest(), this.getVoltage());
+		}
 
 		/**
 		 * Attempts to smelt an item.
@@ -73,11 +82,11 @@ public class TileEntityElectricFurnace extends TileEntityElectricityRunnable imp
 		{
 			if (this.canProcess())
 			{
-				if (this.wattsReceived >= TileEntityElectricFurnace.WATTS_PER_TICK)
+				if (this.energyBuffer >= this.WATTS_PER_TICK)
 				{
 					if (this.processTicks == 0)
 					{
-						this.processTicks = TileEntityElectricFurnace.PROCESS_TIME_REQUIRED;
+						this.processTicks = this.PROCESS_TIME_REQUIRED;
 					}
 					else if (this.processTicks > 0)
 					{
@@ -102,7 +111,7 @@ public class TileEntityElectricFurnace extends TileEntityElectricityRunnable imp
 					this.processTicks = 0;
 				}
 
-				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4, 0);
+				this.energyBuffer = Math.max(this.energyBuffer - WATTS_PER_TICK / 4, 0);
 			}
 			else
 			{
@@ -126,15 +135,15 @@ public class TileEntityElectricFurnace extends TileEntityElectricityRunnable imp
 	}
 
 	@Override
-	public ElectricityPack getRequest()
+	public float getRequest()
 	{
 		if (this.canProcess())
 		{
-			return new ElectricityPack(WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+			return WATTS_PER_TICK-energyBuffer;
 		}
 		else
 		{
-			return new ElectricityPack();
+			return 0;
 		}
 	}
 
@@ -396,5 +405,25 @@ public class TileEntityElectricFurnace extends TileEntityElectricityRunnable imp
 	public boolean canExtractItem(int slotID, ItemStack par2ItemStack, int par3)
 	{
 		return slotID == 2;
+	}
+
+	@Override
+	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive) 
+	{
+		float energyReceived = electricityPack.getWatts();
+		float energyUsed = Math.min(getRequest(), energyReceived);
+		
+		if(doReceive)
+		{
+			energyBuffer += energyUsed;
+		}
+		
+		return energyUsed;
+	}
+
+	@Override
+	public float getVoltage()
+	{
+		return 120;
 	}
 }
