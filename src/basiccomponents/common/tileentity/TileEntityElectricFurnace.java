@@ -139,7 +139,7 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	{
 		if (this.canProcess())
 		{
-			return WATTS_PER_TICK-energyBuffer;
+			return WATTS_PER_TICK;
 		}
 		else
 		{
@@ -410,9 +410,8 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	@Override
 	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
 	{
-		System.out.println(electricityPack.getWatts());
 		float energyReceived = electricityPack.getWatts();
-		float energyUsed = Math.min(WATTS_PER_TICK-energyBuffer, energyReceived);
+		float energyUsed = Math.min(WATTS_PER_TICK - energyBuffer, energyReceived);
 
 		if (doReceive)
 		{
