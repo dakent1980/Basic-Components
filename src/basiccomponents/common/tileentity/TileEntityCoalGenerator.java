@@ -222,7 +222,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	{
 		super.writeToNBT(par1NBTTagCompound);
 		par1NBTTagCompound.setInteger("itemCookTime", this.itemCookTime);
-		par1NBTTagCompound.setDouble("generateRate", this.generateWatts);
+		par1NBTTagCompound.setFloat("generateRate", this.generateWatts);
 		NBTTagList var2 = new NBTTagList();
 
 		for (int var3 = 0; var3 < this.containingItems.length; ++var3)

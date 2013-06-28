@@ -58,6 +58,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 				 * Decharge electric item.
 				 */
 				this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dechargeItem(this.containingItems[1], this.getMaxEnergyStored() - this.getEnergyStored(), this.getVoltage()));
+				
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
 				TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
 				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
@@ -70,7 +71,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 					{
 						ElectricityPack sendPack = ElectricityPack.getFromWatts(Math.min(this.getEnergyStored(), Math.min(2500, powerRequest)), getVoltage());
 						float producedPower = outputNetwork.produce(sendPack, this);
-						this.setEnergyStored(this.getEnergyStored() - (sendPack.getWatts() - producedPower));
+						this.setEnergyStored(this.getEnergyStored() - producedPower);
 					}
 				}
 			}

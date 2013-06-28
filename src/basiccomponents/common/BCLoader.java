@@ -31,6 +31,8 @@ public class BCLoader
 	{
 		BasicComponents.CHANNEL = CHANNEL;
 		BasicComponents.requestAll(this);
+		
+		UniversalElectricity.register();
 	}
 
 	@Init
