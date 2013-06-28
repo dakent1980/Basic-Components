@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
 /**
@@ -41,7 +40,7 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	{
 
 	}
-	
+
 	@Override
 	public float getMaxEnergyStored(ItemStack itemStack)
 	{
@@ -53,11 +52,11 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	{
 		return 25;
 	}
-	
+
 	@Override
 	public float getTransfer(ItemStack itemStack)
 	{
-		return getMaxEnergyStored(itemStack)*0.005F;
+		return getMaxEnergyStored(itemStack) * 0.005F;
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer)
 	{
 		return energy;
 	}

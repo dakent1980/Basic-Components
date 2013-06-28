@@ -637,6 +637,7 @@ public class BasicComponents
 		BasicComponents.requestItem("infiniteBattery", 0);
 
 		requireMachines(mod, 0);
+		registerTileEntities();
 	}
 
 	public static Object getFirstDependant()

@@ -41,9 +41,9 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	 * The amount of processing time required.
 	 */
 	public static final int PROCESS_TIME_REQUIRED = 130;
-	
+
 	/**
-	 * The buffer of energy this Electric Furnace has stored. 
+	 * The buffer of energy this Electric Furnace has stored.
 	 */
 	public float energyBuffer;
 
@@ -70,9 +70,9 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 		/**
 		 * Attempts to charge using batteries.
 		 */
-		if(energyBuffer < WATTS_PER_TICK)
+		if (energyBuffer < WATTS_PER_TICK)
 		{
-			this.energyBuffer += ElectricItemHelper.dechargeItem(this.containingItems[0], getRequest(), this.getVoltage());
+			this.energyBuffer += ElectricItemHelper.dechargeItem(this.containingItems[0], getRequest(ForgeDirection.UNKNOWN), this.getVoltage());
 		}
 
 		/**
@@ -82,11 +82,11 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 		{
 			if (this.canProcess())
 			{
-				if (this.energyBuffer >= this.WATTS_PER_TICK)
+				if (this.energyBuffer >= WATTS_PER_TICK)
 				{
 					if (this.processTicks == 0)
 					{
-						this.processTicks = this.PROCESS_TIME_REQUIRED;
+						this.processTicks = PROCESS_TIME_REQUIRED;
 					}
 					else if (this.processTicks > 0)
 					{
@@ -135,11 +135,11 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	}
 
 	@Override
-	public float getRequest()
+	public float getRequest(ForgeDirection direction)
 	{
 		if (this.canProcess())
 		{
-			return WATTS_PER_TICK-energyBuffer;
+			return WATTS_PER_TICK;
 		}
 		else
 		{
@@ -408,16 +408,16 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	}
 
 	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive) 
+	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
 	{
 		float energyReceived = electricityPack.getWatts();
-		float energyUsed = Math.min(getRequest(), energyReceived);
-		
-		if(doReceive)
+		float energyUsed = Math.min(WATTS_PER_TICK, energyReceived);
+
+		if (doReceive)
 		{
-			energyBuffer += energyUsed;
+			this.energyBuffer += energyUsed;
 		}
-		
+
 		return energyUsed;
 	}
 

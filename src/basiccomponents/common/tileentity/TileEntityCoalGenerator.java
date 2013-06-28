@@ -53,7 +53,6 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	 */
 	public float prevGenerateWatts, generateWatts = 0;
 
-	public IConductor connectedElectricUnit = null;
 	/**
 	 * The number of ticks that a fresh copy of the currently-burning item would keep the furnace
 	 * burning for
@@ -79,6 +78,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 
 		if (!this.worldObj.isRemote)
 		{
+			IConductor connectedElectricUnit = null;
 			this.prevGenerateWatts = this.generateWatts;
 
 			// Check nearby blocks and see if the conductor is full. If so, then it is connected
@@ -91,16 +91,16 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 			{
 				if (network.getRequest() > 0)
 				{
-					this.connectedElectricUnit = (IConductor) outputTile;
+					connectedElectricUnit = (IConductor) outputTile;
 				}
 				else
 				{
-					this.connectedElectricUnit = null;
+					connectedElectricUnit = null;
 				}
 			}
 			else
 			{
-				this.connectedElectricUnit = null;
+				connectedElectricUnit = null;
 			}
 
 			if (!this.isDisabled())
@@ -109,13 +109,13 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 				{
 					this.itemCookTime--;
 
-					if (this.connectedElectricUnit != null)
+					if (connectedElectricUnit != null)
 					{
 						this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
 					}
 				}
 
-				if (this.containingItems[0] != null && this.connectedElectricUnit != null)
+				if (this.containingItems[0] != null && connectedElectricUnit != null)
 				{
 					if (this.containingItems[0].getItem().itemID == Item.coal.itemID)
 					{
@@ -127,16 +127,16 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 					}
 				}
 
-				if (this.connectedElectricUnit == null || this.itemCookTime <= 0)
+				if (connectedElectricUnit == null || this.itemCookTime <= 0)
 				{
 					this.generateWatts = Math.max(this.generateWatts - 8, 0);
 				}
 
-				if (this.connectedElectricUnit != null)
+				if (connectedElectricUnit != null)
 				{
 					if (this.generateWatts > MIN_GENERATE_WATTS)
 					{
-						this.connectedElectricUnit.getNetwork().produce(ElectricityPack.getFromWatts(generateWatts/getVoltage(), getVoltage()), this);
+						connectedElectricUnit.getNetwork().produce(ElectricityPack.getFromWatts(generateWatts / getVoltage(), getVoltage()), this);
 					}
 				}
 			}
@@ -357,19 +357,19 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	}
 
 	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive) 
+	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
 	{
 		return 0;
 	}
 
 	@Override
-	public float getRequest() 
+	public float getRequest(ForgeDirection direction)
 	{
 		return 0;
 	}
 
 	@Override
-	public float getVoltage() 
+	public float getVoltage()
 	{
 		return 120;
 	}
