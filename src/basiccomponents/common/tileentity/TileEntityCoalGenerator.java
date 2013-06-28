@@ -16,13 +16,15 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IConductor;
+import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityElectrical;
+import universalelectricity.prefab.tile.TileEntityDisableable;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
 
@@ -32,7 +34,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityCoalGenerator extends TileEntityElectrical implements IInventory, ISidedInventory, IPacketReceiver
+public class TileEntityCoalGenerator extends TileEntityDisableable implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
 {
 	/**
 	 * Maximum amount of energy needed to generate electricity
@@ -49,7 +51,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 	/**
 	 * Per second
 	 */
-	public double prevGenerateWatts, generateWatts = 0;
+	public float prevGenerateWatts, generateWatts = 0;
 
 	public IConductor connectedElectricUnit = null;
 	/**
@@ -87,7 +89,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 
 			if (network != null)
 			{
-				if (network.getRequest().getWatts() > 0)
+				if (network.getRequest() > 0)
 				{
 					this.connectedElectricUnit = (IConductor) outputTile;
 				}
@@ -109,7 +111,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 
 					if (this.connectedElectricUnit != null)
 					{
-						this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005 + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
+						this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
 					}
 				}
 
@@ -134,11 +136,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 				{
 					if (this.generateWatts > MIN_GENERATE_WATTS)
 					{
-						this.connectedElectricUnit.getNetwork().startProducing(this, (this.generateWatts / this.getVoltage()) / 20, this.getVoltage());
-					}
-					else
-					{
-						this.connectedElectricUnit.getNetwork().stopProducing(this);
+						this.connectedElectricUnit.getNetwork().produce(ElectricityPack.getFromWatts(generateWatts/getVoltage(), getVoltage()), this);
 					}
 				}
 			}
@@ -171,7 +169,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 		{
 			if (this.worldObj.isRemote)
 			{
-				this.generateWatts = dataStream.readDouble();
+				this.generateWatts = dataStream.readFloat();
 				this.itemCookTime = dataStream.readInt();
 				this.disabledTicks = dataStream.readInt();
 			}
@@ -200,7 +198,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 	{
 		super.readFromNBT(par1NBTTagCompound);
 		this.itemCookTime = par1NBTTagCompound.getInteger("itemCookTime");
-		this.generateWatts = par1NBTTagCompound.getDouble("generateRate");
+		this.generateWatts = par1NBTTagCompound.getFloat("generateRate");
 		NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
 		this.containingItems = new ItemStack[this.getSizeInventory()];
 
@@ -356,5 +354,23 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IIn
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int j)
 	{
 		return slotID == 0;
+	}
+
+	@Override
+	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive) 
+	{
+		return 0;
+	}
+
+	@Override
+	public float getRequest() 
+	{
+		return 0;
+	}
+
+	@Override
+	public float getVoltage() 
+	{
+		return 120;
 	}
 }
