@@ -31,44 +31,50 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack itemStack)
+	public double getJoules(ItemStack itemStack)
 	{
-		return this.getMaxEnergyStored(itemStack);
+		return this.getMaxJoules(itemStack);
 	}
 
 	@Override
-	public void setEnergy(ItemStack itemStack, float joules)
+	public void setJoules(double joules, ItemStack itemStack)
 	{
 
 	}
-	
+
 	@Override
-	public float getMaxEnergyStored(ItemStack itemStack)
+	public double getMaxJoules(ItemStack itemStack)
 	{
-		return Float.POSITIVE_INFINITY;
+		return Double.POSITIVE_INFINITY;
 	}
 
 	@Override
-	public float getVoltage(ItemStack itemStack)
+	public double getVoltage(ItemStack itemStack)
 	{
 		return 25;
 	}
-	
+
 	@Override
-	public float getTransfer(ItemStack itemStack)
+	public ElectricityPack onReceive(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		return getMaxEnergyStored(itemStack)*0.005F;
+		return electricityPack;
 	}
 
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		return energy;
+		return electricityPack;
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	public ElectricityPack getReceiveRequest(ItemStack itemStack)
 	{
-		return energy;
+		return new ElectricityPack(Double.POSITIVE_INFINITY, this.getVoltage(itemStack));
+	}
+
+	@Override
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
+	{
+		return new ElectricityPack(Double.POSITIVE_INFINITY, this.getVoltage(itemStack));
 	}
 }

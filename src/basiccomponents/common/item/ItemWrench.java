@@ -6,9 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.tools.IToolWrench;
+import universalelectricity.prefab.implement.IToolConfigurator;
 
-public class ItemWrench extends ItemBase implements IToolWrench
+public class ItemWrench extends ItemBase implements IToolConfigurator
 {
 	public ItemWrench(int id)
 	{

@@ -35,8 +35,8 @@ public class GuiBatteryBox extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 6, 4210752);
-		String displayJoules = ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES);
-		String displayMaxJoules = ElectricityDisplay.getDisplay(tileEntity.getMaxEnergyStored(), ElectricUnit.JOULES);
+		String displayJoules = ElectricityDisplay.getDisplayShort(tileEntity.getJoules(), ElectricUnit.JOULES);
+		String displayMaxJoules = ElectricityDisplay.getDisplay(tileEntity.getMaxJoules(), ElectricUnit.JOULES);
 
 		if (this.tileEntity.isDisabled())
 		{
@@ -63,7 +63,7 @@ public class GuiBatteryBox extends GuiContainer
 		// Background energy bar
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, this.xSize, this.ySize);
 		// Foreground energy bar
-		int scale = (int) ((this.tileEntity.getEnergyStored() / this.tileEntity.getMaxEnergyStored()) * 72);
+		int scale = (int) ((this.tileEntity.getJoules() / this.tileEntity.getMaxJoules()) * 72);
 		this.drawTexturedModalRect(containerWidth + 87, containerHeight + 52, 176, 0, scale, 20);
 	}
 }
