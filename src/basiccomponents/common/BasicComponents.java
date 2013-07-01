@@ -2,9 +2,7 @@ package basiccomponents.common;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -37,6 +35,7 @@ import basiccomponents.common.tileentity.TileEntityBatteryBox;
 import basiccomponents.common.tileentity.TileEntityCoalGenerator;
 import basiccomponents.common.tileentity.TileEntityCopperWire;
 import basiccomponents.common.tileentity.TileEntityElectricFurnace;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
@@ -44,6 +43,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * The main class for managing Basic Component items and blocks. Reference objects from this class
@@ -391,9 +391,7 @@ public class BasicComponents
 					{
 						try
 						{
-							Class registry = Class.forName("cpw.mods.fml.client.registry.ClientRegistry");
-							Method m = registry.getMethod("bindTileEntitySpecialRenderer", Class.class, Class.forName("net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer"));
-							m.invoke(null, TileEntityCopperWire.class, new RenderCopperWire());
+						    registerCopperWireRenderer();
 						}
 						catch (Exception e)
 						{
@@ -445,6 +443,12 @@ public class BasicComponents
 
 		return null;
 	}
+    
+    @SideOnly(Side.CLIENT)
+    private static void registerCopperWireRenderer() throws Exception
+    {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCopperWire.class, new RenderCopperWire());
+    }
 
 	public static Block requestBlock(String name, int id)
 	{
