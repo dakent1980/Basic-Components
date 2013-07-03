@@ -166,9 +166,6 @@ public class BasicComponents
 
 	public static final ArrayList bcDependants = new ArrayList();
 
-	private static int NEXT_BLOCK_ID = BLOCK_ID_PREFIX;
-	private static int NEXT_ITEM_ID = ITEM_ID_PREFIX;
-
 	public static void init()
 	{
 		if (!INITIALIZED)
