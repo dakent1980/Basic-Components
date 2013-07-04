@@ -57,7 +57,7 @@ public class BasicComponents
 	public static final String NAME = "Basic Components";
 	public static String CHANNEL = "";
 
-	public static final String RESOURCE_PATH = "/mods/basiccomponents/";
+	public static final String RESOURCE_PATH = "/assets/basiccomponents/";
 
 	public static CommonProxy proxy;
 
@@ -72,7 +72,8 @@ public class BasicComponents
 	public static final String ITEM_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "items/";
 	public static final String MODEL_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "models/";
 
-	public static final String TEXTURE_NAME_PREFIX = "basiccomponents:";
+    public static final String TEXTURE_DOMAIN = "basiccomponents";
+	public static final String TEXTURE_NAME_PREFIX = TEXTURE_DOMAIN + ":";
 
 	public static final String LANGUAGE_PATH = RESOURCE_PATH + "languages/";
 	private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US", "zh_CN", "es_ES", "it_IT", "nl_NL", "de_DE" };

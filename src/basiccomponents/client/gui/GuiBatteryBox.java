@@ -1,11 +1,10 @@
 package basiccomponents.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
-
 import org.lwjgl.opengl.GL11;
-
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import basiccomponents.common.BasicComponents;
@@ -17,6 +16,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiBatteryBox extends GuiContainer
 {
+    private static final ResourceLocation batteryBoxTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/battery_box.png");
+    
 	private TileEntityBatteryBox tileEntity;
 
 	private int containerWidth;
@@ -55,7 +56,7 @@ public class GuiBatteryBox extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		this.mc.renderEngine.bindTexture(BasicComponents.GUI_DIRECTORY + "battery_box.png");
+		this.mc.renderEngine.func_110577_a(batteryBoxTexture);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		this.containerWidth = (this.width - this.xSize) / 2;

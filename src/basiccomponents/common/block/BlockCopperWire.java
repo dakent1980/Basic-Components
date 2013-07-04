@@ -2,6 +2,7 @@ package basiccomponents.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -22,6 +23,12 @@ public class BlockCopperWire extends BlockConductor
 		this.setCreativeTab(CreativeTabs.tabRedstone);
 		Block.setBurnProperties(this.blockID, 30, 60);
 	}
+
+    @Override
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replace("tile.", ""));
+    }
 
 	/**
 	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the
