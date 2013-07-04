@@ -1,14 +1,13 @@
 package basiccomponents.common;
 
 import java.util.Arrays;
-
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.ConductorChunkInitiate;
 import universalelectricity.prefab.network.PacketManager;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -27,7 +26,7 @@ public class BCLoader
 	@Mod.Metadata(ID)
 	public static ModMetadata metadata;
 
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		BasicComponents.CHANNEL = CHANNEL;
@@ -36,7 +35,7 @@ public class BCLoader
 		ConductorChunkInitiate.register();
 	}
 
-	@Init
+    @EventHandler
 	public void load(FMLInitializationEvent evt)
 	{
 		metadata.modId = BCLoader.CHANNEL;
