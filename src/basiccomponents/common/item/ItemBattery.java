@@ -25,7 +25,7 @@ public class ItemBattery extends ItemElectric
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack itemStack)
+	public float getMaxElectricityStored(ItemStack itemStack)
 	{
 		return 1000000;
 	}

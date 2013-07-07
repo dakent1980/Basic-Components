@@ -69,7 +69,7 @@ public class ContainerBatteryBox extends Container
 			{
 				if (this.getSlot(0).isItemValid(itemStack))
 				{
-					if (((IItemElectric) itemStack.getItem()).getEnergyStored(itemStack) > 0)
+					if (((IItemElectric) itemStack.getItem()).getElectricityStored(itemStack) > 0)
 					{
 						if (!this.mergeItemStack(itemStack, 1, 2, false))
 						{

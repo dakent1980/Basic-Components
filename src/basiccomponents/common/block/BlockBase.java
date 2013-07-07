@@ -13,12 +13,7 @@ public class BlockBase extends Block
 		super(BasicComponents.CONFIGURATION.getItem(name, id).getInt(id), Material.rock);
 		this.setCreativeTab(CreativeTabs.tabBlock);
 		this.setUnlocalizedName(BasicComponents.TEXTURE_NAME_PREFIX + name);
+		this.func_111022_d(BasicComponents.TEXTURE_NAME_PREFIX + name);
 		this.setHardness(2f);
 	}
-
-    @Override
-    public void registerIcons(IconRegister par1IconRegister)
-    {
-        this.blockIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replace("tile.", ""));
-    }
 }

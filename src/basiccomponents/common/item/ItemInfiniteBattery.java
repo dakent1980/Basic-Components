@@ -30,19 +30,19 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack itemStack)
+	public float getElectricityStored(ItemStack itemStack)
 	{
-		return this.getMaxEnergyStored(itemStack);
+		return this.getMaxElectricityStored(itemStack);
 	}
 
 	@Override
-	public void setEnergy(ItemStack itemStack, float joules)
+	public void setElectricity(ItemStack itemStack, float joules)
 	{
 
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack itemStack)
+	public float getMaxElectricityStored(ItemStack itemStack)
 	{
 		return Float.POSITIVE_INFINITY;
 	}
@@ -56,17 +56,17 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	@Override
 	public float getTransfer(ItemStack itemStack)
 	{
-		return getMaxEnergyStored(itemStack) * 0.005F;
+		return getMaxElectricityStored(itemStack) * 0.005F;
 	}
 
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public float recharge(ItemStack theItem, float energy, boolean doReceive)
 	{
 		return energy;
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer)
+	public float discharge(ItemStack theItem, float energy, boolean doTransfer)
 	{
 		return energy;
 	}

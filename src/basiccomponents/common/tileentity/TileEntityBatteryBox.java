@@ -289,7 +289,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 			}
 			else if (slotID == 1)
 			{
-				return ((IItemElectric) itemstack.getItem()).getEnergyStored(itemstack) > 0;
+				return ((IItemElectric) itemstack.getItem()).getElectricityStored(itemstack) > 0;
 			}
 		}
 		return false;
@@ -306,7 +306,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 			}
 			else if (slotID == 1)
 			{
-				return ((IItemElectric) itemstack.getItem()).getEnergyStored(itemstack) <= 0;
+				return ((IItemElectric) itemstack.getItem()).getElectricityStored(itemstack) <= 0;
 			}
 		}
 

@@ -3,6 +3,7 @@ package basiccomponents.common;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -72,7 +73,7 @@ public class BasicComponents
 	public static final String ITEM_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "items/";
 	public static final String MODEL_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "models/";
 
-    public static final String TEXTURE_DOMAIN = "basiccomponents";
+	public static final String TEXTURE_DOMAIN = "basiccomponents";
 	public static final String TEXTURE_NAME_PREFIX = TEXTURE_DOMAIN + ":";
 
 	public static final String LANGUAGE_PATH = RESOURCE_PATH + "languages/";
@@ -389,7 +390,7 @@ public class BasicComponents
 					{
 						try
 						{
-						    registerCopperWireRenderer();
+							registerCopperWireRenderer();
 						}
 						catch (Exception e)
 						{
@@ -441,12 +442,12 @@ public class BasicComponents
 
 		return null;
 	}
-    
-    @SideOnly(Side.CLIENT)
-    private static void registerCopperWireRenderer() throws Exception
-    {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCopperWire.class, new RenderCopperWire());
-    }
+
+	@SideOnly(Side.CLIENT)
+	private static void registerCopperWireRenderer() throws Exception
+	{
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCopperWire.class, new RenderCopperWire());
+	}
 
 	public static Block requestBlock(String name, int id)
 	{
@@ -542,15 +543,6 @@ public class BasicComponents
 	}
 
 	/**
-	 * Kept for backwards compatibility
-	 */
-	@Deprecated
-	public static void register(Object mod, String channel)
-	{
-		register(channel);
-	}
-
-	/**
 	 * Called when all items are registered. Only call once per mod.
 	 */
 	public static void register(String channel)
@@ -590,15 +582,6 @@ public class BasicComponents
 		{
 			GameRegistry.addSmelting(blockOreTin.blockID, OreDictionary.getOres("ingotTin").get(0), 0.7f);
 		}
-	}
-
-	/**
-	 * Kept for backwards compatibility
-	 */
-	@Deprecated
-	public static void requestAll()
-	{
-		requestAll(null);
 	}
 
 	/**
