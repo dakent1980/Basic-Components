@@ -2,10 +2,9 @@ package basiccomponents.common.block;
 
 import java.util.List;
 import java.util.Random;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -159,7 +158,7 @@ public class BlockBasicMachine extends BlockAdvanced
 	 * Called when the block is placed in the world.
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 

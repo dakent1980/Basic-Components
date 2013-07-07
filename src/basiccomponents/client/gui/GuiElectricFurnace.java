@@ -1,6 +1,7 @@
 package basiccomponents.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
@@ -17,6 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiElectricFurnace extends GuiContainer
 {
+    private static final ResourceLocation electricFurnaceTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/electric_furnace.png");
+    
 	private TileEntityElectricFurnace tileEntity;
 
 	private int containerWidth;
@@ -64,7 +67,7 @@ public class GuiElectricFurnace extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		this.mc.renderEngine.bindTexture(BasicComponents.GUI_DIRECTORY + "electric_furnace.png");
+		this.mc.renderEngine.func_110577_a(electricFurnaceTexture);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		containerWidth = (this.width - this.xSize) / 2;

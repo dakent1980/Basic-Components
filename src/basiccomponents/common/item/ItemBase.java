@@ -1,8 +1,11 @@
 package basiccomponents.common.item;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.util.Icon;
 import basiccomponents.common.BasicComponents;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * An Base Item Class for Basic Components. Do not use this! Make your own!
@@ -20,4 +23,11 @@ public class ItemBase extends Item
 		this.setUnlocalizedName(BasicComponents.TEXTURE_NAME_PREFIX + name);
 		this.setNoRepair();
 	}
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerIcons(IconRegister iconRegister)
+    {
+        this.itemIcon = iconRegister.registerIcon(this.getUnlocalizedName().replace("item.", ""));
+    }
 }

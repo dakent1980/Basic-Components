@@ -1,54 +1,75 @@
 package basiccomponents.client;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.tileentity.TileEntity;
-
+import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
-
+import universalelectricity.core.block.IConnector;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.tileentity.TileEntityCopperWire;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderCopperWire extends TileEntitySpecialRenderer
 {
+    private static final ResourceLocation copperWireTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/models/copperWire.png");
+    
 	public static final ModelCopperWire model = new ModelCopperWire();
 
 	public void renderModelAt(TileEntityCopperWire tileEntity, double d, double d1, double d2, float f)
 	{
 		// Texture file
-		this.bindTextureByName(BasicComponents.MODEL_TEXTURE_DIRECTORY + "copperWire.png");
+        FMLClientHandler.instance().getClient().renderEngine.func_110577_a(copperWireTexture);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 
-		if (tileEntity.visuallyConnected[0])
+		boolean[] connectable = new boolean[] { false, false, false, false, false, false };
+
+		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			TileEntity sideTile = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity), side);
+
+			if (sideTile instanceof IConnector)
+			{
+				if (((IConnector) sideTile).canConnect(side.getOpposite()))
+				{
+					connectable[side.ordinal()] = true;
+				}
+			}
+		}
+
+		if (connectable[0])
 		{
 			model.renderBottom();
 		}
 
-		if (tileEntity.visuallyConnected[1])
+		if (connectable[1])
 		{
 			model.renderTop();
 		}
 
-		if (tileEntity.visuallyConnected[2])
+		if (connectable[2])
 		{
 			model.renderBack();
 		}
 
-		if (tileEntity.visuallyConnected[3])
+		if (connectable[3])
 		{
 			model.renderFront();
 		}
 
-		if (tileEntity.visuallyConnected[4])
+		if (connectable[4])
 		{
 			model.renderLeft();
 		}
 
-		if (tileEntity.visuallyConnected[5])
+		if (connectable[5])
 		{
 			model.renderRight();
 		}
