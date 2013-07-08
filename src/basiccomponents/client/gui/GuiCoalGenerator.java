@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiCoalGenerator extends GuiContainer
 {
-    private static final ResourceLocation coalGeneratorTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/coal_generator.png");
-    
+	private static final ResourceLocation coalGeneratorTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/coal_generator.png");
+
 	private TileEntityCoalGenerator tileEntity;
 
 	private int containerWidth;

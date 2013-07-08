@@ -24,11 +24,11 @@ public class BlockCopperWire extends BlockConductor
 		Block.setBurnProperties(this.blockID, 30, 60);
 	}
 
-    @Override
-    public void registerIcons(IconRegister par1IconRegister)
-    {
-        this.blockIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replace("tile.", ""));
-    }
+	@Override
+	public void registerIcons(IconRegister par1IconRegister)
+	{
+		this.blockIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replace("tile.", ""));
+	}
 
 	/**
 	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the

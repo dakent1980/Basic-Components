@@ -381,7 +381,7 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	 * the given slot.
 	 */
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemStack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemStack)
 	{
 		return slotID == 1 ? FurnaceRecipes.smelting().getSmeltingResult(itemStack) != null : (slotID == 0 ? itemStack.getItem() instanceof IItemElectric : false);
 	}
@@ -398,7 +398,7 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	@Override
 	public boolean canInsertItem(int slotID, ItemStack par2ItemStack, int par3)
 	{
-		return this.isStackValidForSlot(slotID, par2ItemStack);
+		return this.isItemValidForSlot(slotID, par2ItemStack);
 	}
 
 	@Override

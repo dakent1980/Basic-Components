@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiElectricFurnace extends GuiContainer
 {
-    private static final ResourceLocation electricFurnaceTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/electric_furnace.png");
-    
+	private static final ResourceLocation electricFurnaceTexture = new ResourceLocation(BasicComponents.TEXTURE_DOMAIN, "textures/gui/electric_furnace.png");
+
 	private TileEntityElectricFurnace tileEntity;
 
 	private int containerWidth;

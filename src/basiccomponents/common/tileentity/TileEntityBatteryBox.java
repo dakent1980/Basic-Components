@@ -2,6 +2,7 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,9 @@ import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricalStorage;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -267,7 +270,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		return itemstack.getItem() instanceof IItemElectric;
 	}
@@ -281,7 +284,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	@Override
 	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
 	{
-		if (this.isStackValidForSlot(slotID, itemstack))
+		if (this.isItemValidForSlot(slotID, itemstack))
 		{
 			if (slotID == 0)
 			{
@@ -298,7 +301,7 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if (this.isStackValidForSlot(slotID, itemstack))
+		if (this.isItemValidForSlot(slotID, itemstack))
 		{
 			if (slotID == 0)
 			{

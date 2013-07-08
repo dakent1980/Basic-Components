@@ -35,10 +35,10 @@ public class ContainerCoalGenerator extends Container
 	}
 
 	@Override
-	public void onCraftGuiClosed(EntityPlayer entityplayer)
+	public void onContainerClosed(EntityPlayer entityplayer)
 	{
-		super.onCraftGuiClosed(entityplayer);
-		tileEntity.playersUsing.remove(entityplayer);
+		super.onContainerClosed(entityplayer);
+		this.tileEntity.playersUsing.remove(entityplayer);
 	}
 
 	@Override

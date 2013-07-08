@@ -2,6 +2,7 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -26,7 +27,9 @@ import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityDisableable;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -330,7 +333,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		return itemstack.itemID == Item.coal.itemID;
 	}
@@ -344,7 +347,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	@Override
 	public boolean canInsertItem(int slotID, ItemStack itemstack, int j)
 	{
-		return this.isStackValidForSlot(slotID, itemstack);
+		return this.isItemValidForSlot(slotID, itemstack);
 	}
 
 	@Override
