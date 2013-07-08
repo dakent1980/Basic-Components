@@ -20,9 +20,9 @@ import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityDisableable;
+import universalelectricity.prefab.tile.ElectricityHandler;
+import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
-import basiccomponents.common.block.BlockBasicMachine;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -30,7 +30,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityElectricFurnace extends TileEntityDisableable implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
+public class TileEntityElectricFurnace extends TileEntityElectrical implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
 {
 	/**
 	 * The amount of watts required every TICK.
@@ -41,11 +41,6 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	 * The amount of processing time required.
 	 */
 	public static final int PROCESS_TIME_REQUIRED = 130;
-
-	/**
-	 * The buffer of energy this Electric Furnace has stored.
-	 */
-	public float energyBuffer;
 
 	/**
 	 * The amount of ticks this machine has been processing.
@@ -62,6 +57,11 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	 */
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
+	public TileEntityElectricFurnace()
+	{
+		this.electricityHandler = new ElectricityHandler(this, WATTS_PER_TICK * 2);
+	}
+
 	@Override
 	public void updateEntity()
 	{
@@ -70,9 +70,9 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 		/**
 		 * Attempts to charge using batteries.
 		 */
-		if (energyBuffer < WATTS_PER_TICK)
+		if (this.getEnergyStored() < this.getMaxEnergyStored())
 		{
-			this.energyBuffer += ElectricItemHelper.dechargeItem(this.containingItems[0], getRequest(ForgeDirection.UNKNOWN), this.getVoltage());
+			this.electricityHandler.receiveElectricity(ElectricityPack.getFromWatts(ElectricItemHelper.dischargeItem(this.containingItems[0], this.getRequest(ForgeDirection.UNKNOWN)), this.getVoltage()), true);
 		}
 
 		/**
@@ -82,8 +82,10 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 		{
 			if (this.canProcess())
 			{
-				if (this.energyBuffer >= WATTS_PER_TICK)
+				if (this.electricityHandler.provideElectricity(ElectricityPack.getFromWatts(WATTS_PER_TICK, this.getVoltage()), false).getWatts() >= WATTS_PER_TICK)
 				{
+					this.electricityHandler.provideElectricity(ElectricityPack.getFromWatts(WATTS_PER_TICK, this.getVoltage()), true);
+
 					if (this.processTicks == 0)
 					{
 						this.processTicks = PROCESS_TIME_REQUIRED;
@@ -111,7 +113,6 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 					this.processTicks = 0;
 				}
 
-				this.energyBuffer = Math.max(this.energyBuffer - WATTS_PER_TICK / 4, 0);
 			}
 			else
 			{
@@ -131,7 +132,7 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return direction == ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.ELECTRIC_FURNACE_METADATA + 2);
+		return true;
 	}
 
 	@Override
@@ -150,7 +151,7 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.processTicks, this.disabledTicks);
+		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.processTicks);
 	}
 
 	@Override
@@ -159,7 +160,6 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 		try
 		{
 			this.processTicks = dataStream.readInt();
-			this.disabledTicks = dataStream.readInt();
 		}
 		catch (Exception e)
 		{
@@ -408,22 +408,8 @@ public class TileEntityElectricFurnace extends TileEntityDisableable implements 
 	}
 
 	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
+	public float getProvide(ForgeDirection direction)
 	{
-		float energyReceived = electricityPack.getWatts();
-		float energyUsed = Math.min(WATTS_PER_TICK - energyBuffer, energyReceived);
-
-		if (doReceive)
-		{
-			this.energyBuffer += energyUsed;
-		}
-
-		return energyUsed;
-	}
-
-	@Override
-	public float getVoltage()
-	{
-		return 120;
+		return 0;
 	}
 }

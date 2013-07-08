@@ -3,7 +3,6 @@ package basiccomponents.common;
 import java.util.Arrays;
 
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.prefab.ConductorChunkInitiate;
 import universalelectricity.prefab.network.PacketManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -31,8 +30,6 @@ public class BCLoader
 	{
 		BasicComponents.CHANNEL = CHANNEL;
 		BasicComponents.requestAll(this);
-
-		ConductorChunkInitiate.register();
 	}
 
 	@EventHandler

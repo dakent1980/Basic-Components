@@ -15,7 +15,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConductor;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -24,7 +23,8 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityDisableable;
+import universalelectricity.prefab.tile.ElectricityHandler;
+import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
 
@@ -34,7 +34,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityCoalGenerator extends TileEntityDisableable implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
+public class TileEntityCoalGenerator extends TileEntityElectrical implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
 {
 	/**
 	 * Maximum amount of energy needed to generate electricity
@@ -65,10 +65,9 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
-	@Override
-	public boolean canConnect(ForgeDirection direction)
+	public TileEntityCoalGenerator()
 	{
-		return direction == ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.COAL_GENERATOR_METADATA + 2);
+		this.electricityHandler = new ElectricityHandler(this, MAX_GENERATE_WATTS);
 	}
 
 	@Override
@@ -78,7 +77,6 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 
 		if (!this.worldObj.isRemote)
 		{
-			IConductor connectedElectricUnit = null;
 			this.prevGenerateWatts = this.generateWatts;
 
 			// Check nearby blocks and see if the conductor is full. If so, then it is connected
@@ -87,58 +85,36 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 
 			IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
 
-			if (network != null)
+			if (this.itemCookTime > 0)
 			{
-				if (network.getRequest() > 0)
+				this.itemCookTime--;
+
+				if (this.getEnergyStored() < this.getMaxEnergyStored())
 				{
-					connectedElectricUnit = (IConductor) outputTile;
-				}
-				else
-				{
-					connectedElectricUnit = null;
+					this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
 				}
 			}
-			else
+
+			if (this.containingItems[0] != null && this.getEnergyStored() < this.getMaxEnergyStored())
 			{
-				connectedElectricUnit = null;
+				if (this.containingItems[0].getItem().itemID == Item.coal.itemID)
+				{
+					if (this.itemCookTime <= 0)
+					{
+						this.itemCookTime = 320;
+						this.decrStackSize(0, 1);
+					}
+				}
 			}
 
-			if (!this.isDisabled())
+			if (this.getEnergyStored() >= this.getMaxEnergyStored() || this.itemCookTime <= 0)
 			{
-				if (this.itemCookTime > 0)
-				{
-					this.itemCookTime--;
+				this.generateWatts = Math.max(this.generateWatts - 8, 0);
+			}
 
-					if (connectedElectricUnit != null)
-					{
-						this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
-					}
-				}
-
-				if (this.containingItems[0] != null && connectedElectricUnit != null)
-				{
-					if (this.containingItems[0].getItem().itemID == Item.coal.itemID)
-					{
-						if (this.itemCookTime <= 0)
-						{
-							this.itemCookTime = 320;
-							this.decrStackSize(0, 1);
-						}
-					}
-				}
-
-				if (connectedElectricUnit == null || this.itemCookTime <= 0)
-				{
-					this.generateWatts = Math.max(this.generateWatts - 8, 0);
-				}
-
-				if (connectedElectricUnit != null)
-				{
-					if (this.generateWatts > MIN_GENERATE_WATTS)
-					{
-						connectedElectricUnit.getNetwork().produce(ElectricityPack.getFromWatts(generateWatts / getVoltage(), getVoltage()), this);
-					}
-				}
+			if (this.generateWatts > MIN_GENERATE_WATTS)
+			{
+				this.electricityHandler.receiveElectricity(ElectricityPack.getFromWatts(generateWatts / getVoltage(), getVoltage()), true);
 			}
 
 			if (this.ticks % 3 == 0)
@@ -159,7 +135,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.generateWatts, this.itemCookTime, this.disabledTicks);
+		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.generateWatts, this.itemCookTime);
 	}
 
 	@Override
@@ -171,7 +147,6 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 			{
 				this.generateWatts = dataStream.readFloat();
 				this.itemCookTime = dataStream.readInt();
-				this.disabledTicks = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -357,7 +332,7 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	}
 
 	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
+	public float receiveElectricity(ForgeDirection from, ElectricityPack electricityPack, boolean doReceive)
 	{
 		return 0;
 	}
@@ -369,8 +344,8 @@ public class TileEntityCoalGenerator extends TileEntityDisableable implements IE
 	}
 
 	@Override
-	public float getVoltage()
+	public float getProvide(ForgeDirection direction)
 	{
-		return 120;
+		return this.generateWatts;
 	}
 }

@@ -13,8 +13,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.block.IEnergyStorage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
@@ -24,7 +22,8 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityElectricalStorage;
+import universalelectricity.prefab.tile.ElectricityHandler;
+import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
 
@@ -34,45 +33,47 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityBatteryBox extends TileEntityElectricalStorage implements IElectrical, IEnergyStorage, IPacketReceiver, ISidedInventory
+public class TileEntityBatteryBox extends TileEntityElectrical implements IPacketReceiver, ISidedInventory
 {
 	private ItemStack[] containingItems = new ItemStack[2];
 
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
+
+	public TileEntityBatteryBox()
+	{
+		this.electricityHandler = new ElectricityHandler(this, 5000000);
+	}
 
 	@Override
 	public void updateEntity()
 	{
 		super.updateEntity();
 
-		if (!this.isDisabled())
+		if (!this.worldObj.isRemote)
 		{
-			if (!this.worldObj.isRemote)
+			/**
+			 * Recharges electric item.
+			 */
+			this.setEnergyStored(this.getEnergyStored() - ElectricItemHelper.chargeItem(this.containingItems[0], this.getEnergyStored()));
+
+			/**
+			 * Decharge electric item.
+			 */
+			this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dischargeItem(this.containingItems[1], this.getMaxEnergyStored() - this.getEnergyStored()));
+
+			ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
+			TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
+			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+
+			if (outputNetwork != null)
 			{
-				/**
-				 * Recharges electric item.
-				 */
-				this.setEnergyStored(this.getEnergyStored() - ElectricItemHelper.chargeItem(this.containingItems[0], this.getEnergyStored(), this.getVoltage()));
+				float powerRequest = outputNetwork.getRequest(this);
 
-				/**
-				 * Decharge electric item.
-				 */
-				this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dechargeItem(this.containingItems[1], this.getMaxEnergyStored() - this.getEnergyStored(), this.getVoltage()));
-
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
-				TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
-
-				if (outputNetwork != null)
+				if (powerRequest > 0)
 				{
-					float powerRequest = outputNetwork.getRequest(this);
-
-					if (powerRequest > 0)
-					{
-						ElectricityPack sendPack = ElectricityPack.getFromWatts(Math.min(this.getEnergyStored(), Math.min(2500, powerRequest)), getVoltage());
-						float producedPower = outputNetwork.produce(sendPack, this);
-						this.setEnergyStored(this.getEnergyStored() - producedPower);
-					}
+					ElectricityPack sendPack = ElectricityPack.getFromWatts(Math.min(this.getEnergyStored(), Math.min(2500, powerRequest)), getVoltage());
+					float producedPower = outputNetwork.produce(sendPack, this);
+					this.setEnergyStored(this.getEnergyStored() - producedPower);
 				}
 			}
 		}
@@ -94,16 +95,26 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 		}
 	}
 
+	public ForgeDirection getInput()
+	{
+		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
+	}
+
+	public ForgeDirection getOutput()
+	{
+		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite();
+	}
+
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return direction == ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2) || direction == ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite();
+		return direction == this.getInput() || direction == this.getInput();
 	}
 
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.getEnergyStored(), this.disabledTicks);
+		return PacketManager.getPacket(BasicComponents.CHANNEL, this, this.getEnergyStored());
 	}
 
 	@Override
@@ -112,7 +123,6 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 		try
 		{
 			this.setEnergyStored(dataStream.readFloat());
-			this.disabledTicks = dataStream.readInt();
 		}
 		catch (Exception e)
 		{
@@ -318,33 +328,14 @@ public class TileEntityBatteryBox extends TileEntityElectricalStorage implements
 	}
 
 	@Override
-	public float getMaxEnergyStored()
-	{
-		return 5000000;
-	}
-
-	@Override
-	public float receiveElectricity(ElectricityPack electricityPack, boolean doReceive)
-	{
-		float newStoredEnergy = Math.min(this.getEnergyStored() + electricityPack.getWatts(), this.getMaxEnergyStored());
-
-		if (doReceive)
-		{
-			this.setEnergyStored(newStoredEnergy);
-		}
-
-		return Math.max(electricityPack.getWatts() - newStoredEnergy, 0);
-	}
-
-	@Override
 	public float getRequest(ForgeDirection direction)
 	{
 		return this.getMaxEnergyStored() - this.getEnergyStored();
 	}
 
 	@Override
-	public float getVoltage()
+	public float getProvide(ForgeDirection direction)
 	{
-		return 120;
+		return this.getEnergyStored();
 	}
 }

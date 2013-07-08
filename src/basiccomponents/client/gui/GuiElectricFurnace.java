@@ -42,11 +42,7 @@ public class GuiElectricFurnace extends GuiContainer
 		this.fontRenderer.drawString("Battery:", 10, 53, 4210752);
 		String displayText = "";
 
-		if (this.tileEntity.isDisabled())
-		{
-			displayText = "Disabled!";
-		}
-		else if (this.tileEntity.processTicks > 0)
+		if (this.tileEntity.processTicks > 0)
 		{
 			displayText = "Smelting";
 		}

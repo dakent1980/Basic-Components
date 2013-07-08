@@ -41,11 +41,6 @@ public class GuiBatteryBox extends GuiContainer
 		String displayJoules = ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES);
 		String displayMaxJoules = ElectricityDisplay.getDisplay(tileEntity.getMaxEnergyStored(), ElectricUnit.JOULES);
 
-		if (this.tileEntity.isDisabled())
-		{
-			displayMaxJoules = "Disabled";
-		}
-
 		this.fontRenderer.drawString(displayJoules + " of", 98 - displayJoules.length(), 30, 4210752);
 		this.fontRenderer.drawString(displayMaxJoules, 78, 40, 4210752);
 		this.fontRenderer.drawString("Voltage: " + (int) this.tileEntity.getVoltage(), 90, 60, 4210752);

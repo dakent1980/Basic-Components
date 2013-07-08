@@ -41,11 +41,7 @@ public class GuiCoalGenerator extends GuiContainer
 		this.fontRenderer.drawString("Generating", 90, 33, 4210752);
 		String displayText = "";
 
-		if (this.tileEntity.isDisabled())
-		{
-			displayText = "Disabled";
-		}
-		else if (this.tileEntity.generateWatts <= 0)
+		if (this.tileEntity.generateWatts <= 0)
 		{
 			displayText = "Not Generating";
 		}
