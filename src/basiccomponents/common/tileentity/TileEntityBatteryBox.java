@@ -13,7 +13,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.ElectricalEventHandler;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
 import universalelectricity.core.item.ElectricItemHelper;
@@ -63,15 +63,15 @@ public class TileEntityBatteryBox extends TileEntityElectrical implements IPacke
 
 			ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
 			TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
-			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+			IElectricityNetwork outputNetwork = ElectricalEventHandler.getNetworkFromTileEntity(outputTile, outputDirection);
 
 			if (outputNetwork != null)
 			{
-				float powerRequest = outputNetwork.getRequest(this);
+				ElectricityPack powerRequest = outputNetwork.getRequest(this);
 
-				if (powerRequest > 0)
+				if (powerRequest.getWatts() > 0)
 				{
-					ElectricityPack sendPack = ElectricityPack.getFromWatts(Math.min(this.getEnergyStored(), Math.min(2500, powerRequest)), getVoltage());
+					ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(this.getEnergyStored(), this.getVoltage()), ElectricityPack.getFromWatts(2500, this.getVoltage()));
 					float producedPower = outputNetwork.produce(sendPack, this);
 					this.setEnergyStored(this.getEnergyStored() - producedPower);
 				}

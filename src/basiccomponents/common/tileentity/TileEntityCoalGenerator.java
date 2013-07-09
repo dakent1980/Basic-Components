@@ -16,7 +16,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.ElectricalEventHandler;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
@@ -83,7 +83,7 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IEl
 			ForgeDirection outputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.COAL_GENERATOR_METADATA + 2);
 			TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this.xCoord, this.yCoord, this.zCoord), outputDirection);
 
-			IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+			IElectricityNetwork network = ElectricalEventHandler.getNetworkFromTileEntity(outputTile, outputDirection);
 
 			if (this.itemCookTime > 0)
 			{
