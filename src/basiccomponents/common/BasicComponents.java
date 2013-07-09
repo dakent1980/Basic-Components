@@ -60,8 +60,6 @@ public class BasicComponents
 
 	public static final String RESOURCE_PATH = "/assets/basiccomponents/";
 
-	public static CommonProxy proxy;
-
 	/**
 	 * The Universal Electricity configuration file.
 	 */
