@@ -2,7 +2,7 @@ package basiccomponents.common.block;
 
 import java.util.List;
 import java.util.Random;
-
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,7 +22,7 @@ import basiccomponents.common.tileentity.TileEntityBatteryBox;
 import basiccomponents.common.tileentity.TileEntityCoalGenerator;
 import basiccomponents.common.tileentity.TileEntityElectricFurnace;
 
-public class BlockBasicMachine extends BlockAdvanced
+public class BlockBasicMachine extends BlockAdvanced implements ITileEntityProvider
 {
 	public static final int COAL_GENERATOR_METADATA = 0;
 	public static final int BATTERY_BOX_METADATA = 4;
@@ -300,6 +300,12 @@ public class BlockBasicMachine extends BlockAdvanced
 	{
 		return false;
 	}
+
+    @Override
+    public TileEntity createNewTileEntity(World world)
+    {
+        return null;
+    }
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
