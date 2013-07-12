@@ -2,7 +2,6 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -23,9 +22,7 @@ import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.ElectricityHandler;
 import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
-
 import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -35,7 +32,7 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 	/**
 	 * The amount of watts required every TICK.
 	 */
-	public static final float WATTS_PER_TICK = 500;
+	public static final float WATTS_PER_TICK = 200;
 
 	/**
 	 * The amount of processing time required.
@@ -59,7 +56,7 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 
 	public TileEntityElectricFurnace()
 	{
-		this.electricityHandler = new ElectricityHandler(this, WATTS_PER_TICK * 2);
+		this.electricityHandler = new ElectricityHandler(this, 1000);
 	}
 
 	@Override
@@ -82,10 +79,8 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 		{
 			if (this.canProcess())
 			{
-				if (this.electricityHandler.provideElectricity(ElectricityPack.getFromWatts(WATTS_PER_TICK, this.getVoltage()), false).getWatts() >= WATTS_PER_TICK)
+				if (this.getEnergyStored() >= WATTS_PER_TICK)
 				{
-					this.electricityHandler.provideElectricity(ElectricityPack.getFromWatts(WATTS_PER_TICK, this.getVoltage()), true);
-
 					if (this.processTicks == 0)
 					{
 						this.processTicks = PROCESS_TIME_REQUIRED;
@@ -113,6 +108,7 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 					this.processTicks = 0;
 				}
 
+				this.setEnergyStored(this.getEnergyStored() - WATTS_PER_TICK);
 			}
 			else
 			{
