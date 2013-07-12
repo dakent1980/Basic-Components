@@ -2,7 +2,6 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -26,9 +25,7 @@ import universalelectricity.prefab.tile.ElectricityHandler;
 import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
-
 import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -72,8 +69,8 @@ public class TileEntityBatteryBox extends TileEntityElectrical implements IPacke
 				if (powerRequest.getWatts() > 0)
 				{
 					ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(this.getEnergyStored(), this.getVoltage()), ElectricityPack.getFromWatts(2500, this.getVoltage()));
-					float producedPower = outputNetwork.produce(sendPack, this);
-					this.setEnergyStored(this.getEnergyStored() - producedPower);
+					float rejectedPower = outputNetwork.produce(sendPack, this);
+					this.setEnergyStored(this.getEnergyStored() - (sendPack.getWatts() - rejectedPower));
 				}
 			}
 		}

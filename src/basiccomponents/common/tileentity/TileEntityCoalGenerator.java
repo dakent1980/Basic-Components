@@ -2,7 +2,6 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -27,9 +26,7 @@ import universalelectricity.prefab.tile.ElectricityHandler;
 import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
-
 import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -114,7 +111,12 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IEl
 
 			if (this.generateWatts > MIN_GENERATE_WATTS)
 			{
-				this.electricityHandler.receiveElectricity(ElectricityPack.getFromWatts(generateWatts / getVoltage(), getVoltage()), true);
+                if (network != null)
+                {
+                    ElectricityPack sendPack = ElectricityPack.getFromWatts(this.generateWatts / this.getVoltage(), this.getVoltage());
+                    float producedPower = network.produce(sendPack, this);
+                    this.setEnergyStored(this.getEnergyStored() - producedPower);
+                }
 			}
 
 			if (this.ticks % 3 == 0)
