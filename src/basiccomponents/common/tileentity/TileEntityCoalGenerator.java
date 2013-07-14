@@ -111,12 +111,12 @@ public class TileEntityCoalGenerator extends TileEntityElectrical implements IEl
 
 			if (this.generateWatts > MIN_GENERATE_WATTS)
 			{
-                if (network != null)
-                {
-                    ElectricityPack sendPack = ElectricityPack.getFromWatts(this.generateWatts / this.getVoltage(), this.getVoltage());
-                    float producedPower = network.produce(sendPack, this);
-                    this.setEnergyStored(this.getEnergyStored() - producedPower);
-                }
+				if (network != null)
+				{
+					ElectricityPack sendPack = ElectricityPack.getFromWatts(this.generateWatts / this.getVoltage(), this.getVoltage());
+					float producedPower = network.produce(sendPack, this);
+					this.setEnergyStored(this.getEnergyStored() - producedPower);
+				}
 			}
 
 			if (this.ticks % 3 == 0)
