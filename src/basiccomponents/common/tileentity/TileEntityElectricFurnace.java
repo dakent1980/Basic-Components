@@ -13,21 +13,21 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.compatibility.TileEntityUniversalElectrical;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.ElectricityHandler;
-import universalelectricity.prefab.tile.TileEntityElectrical;
 import basiccomponents.common.BasicComponents;
+import basiccomponents.common.block.BlockBasicMachine;
 import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class TileEntityElectricFurnace extends TileEntityElectrical implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
+public class TileEntityElectricFurnace extends TileEntityUniversalElectrical implements IElectrical, IInventory, ISidedInventory, IPacketReceiver
 {
 	/**
 	 * The amount of watts required every TICK.
@@ -56,7 +56,7 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 
 	public TileEntityElectricFurnace()
 	{
-		this.electricityHandler = new ElectricityHandler(this, 1000);
+	    super(1000);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 		 */
 		if (this.getEnergyStored() < this.getMaxEnergyStored())
 		{
-			this.electricityHandler.receiveElectricity(ElectricityPack.getFromWatts(ElectricItemHelper.dischargeItem(this.containingItems[0], this.getRequest(ForgeDirection.UNKNOWN)), this.getVoltage()), true);
+			this.receiveElectricity(this.getInputDirection(), ElectricityPack.getFromWatts(ElectricItemHelper.dischargeItem(this.containingItems[0], this.getRequest(ForgeDirection.UNKNOWN)), this.getVoltage()), true);
 		}
 
 		/**
@@ -123,12 +123,6 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		return true;
 	}
 
 	@Override
@@ -408,4 +402,16 @@ public class TileEntityElectricFurnace extends TileEntityElectrical implements I
 	{
 		return 0;
 	}
+
+    @Override
+    public ForgeDirection getInputDirection()
+    {
+        return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.ELECTRIC_FURNACE_METADATA + 2);
+    }
+
+    @Override
+    public ForgeDirection getOutputDirection()
+    {
+        return null;
+    }
 }

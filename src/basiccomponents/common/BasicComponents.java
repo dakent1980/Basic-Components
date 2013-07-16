@@ -3,7 +3,6 @@ package basiccomponents.common;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -13,6 +12,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import universalelectricity.compatibility.Compatibility;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.prefab.RecipeHelper;
@@ -495,6 +495,8 @@ public class BasicComponents
 	{
 		if (blockMachine == null)
 		{
+            Compatibility.initiate();
+            
 			id = id <= 0 ? idMachine : id;
 			BasicComponents.CONFIGURATION.load();
 			BasicComponents.blockMachine = new BlockBasicMachine(BasicComponents.CONFIGURATION.getBlock("Basic Machine", id).getInt(id), 0);

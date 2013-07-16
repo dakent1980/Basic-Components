@@ -1,8 +1,8 @@
 package basiccomponents.common.tileentity;
 
-import universalelectricity.prefab.tile.TileEntityConductor;
+import universalelectricity.compatibility.TileEntityUniversalConductor;
 
-public class TileEntityCopperWire extends TileEntityConductor
+public class TileEntityCopperWire extends TileEntityUniversalConductor
 {
 	/**
 	 * Changed this if your mod wants to nerf Basic Component's copper wire.
