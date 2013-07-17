@@ -56,7 +56,7 @@ public class ItemInfiniteBattery extends ItemBase implements IItemElectric
 	@Override
 	public float getTransfer(ItemStack itemStack)
 	{
-		return getMaxElectricityStored(itemStack) * 0.005F;
+		return 0.0F;
 	}
 
 	@Override
