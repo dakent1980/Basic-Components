@@ -99,19 +99,6 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 				this.generateWatts = Math.max(this.generateWatts - 8, 0);
 			}
 
-<<<<<<< HEAD
-			if (this.generateWatts > MIN_GENERATE_WATTS)
-			{
-				if (network != null)
-				{
-					ElectricityPack sendPack = ElectricityPack.getFromWatts(this.generateWatts / this.getVoltage(), this.getVoltage());
-					float producedPower = network.produce(sendPack, this);
-					this.setEnergyStored(this.getEnergyStored() - producedPower);
-				}
-			}
-
-=======
->>>>>>> Update UE. All machines are now compatible with IC2.
 			if (this.ticks % 3 == 0)
 			{
 				for (EntityPlayer player : this.playersUsing)
