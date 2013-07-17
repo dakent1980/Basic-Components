@@ -3,6 +3,7 @@ package basiccomponents.common;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -495,8 +496,8 @@ public class BasicComponents
 	{
 		if (blockMachine == null)
 		{
-            Compatibility.initiate();
-            
+			Compatibility.initiate();
+
 			id = id <= 0 ? idMachine : id;
 			BasicComponents.CONFIGURATION.load();
 			BasicComponents.blockMachine = new BlockBasicMachine(BasicComponents.CONFIGURATION.getBlock("Basic Machine", id).getInt(id), 0);

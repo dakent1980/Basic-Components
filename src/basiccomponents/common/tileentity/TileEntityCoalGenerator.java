@@ -2,6 +2,7 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,7 +21,9 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -58,14 +61,14 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 
 	public TileEntityCoalGenerator()
 	{
-	    super(MAX_GENERATE_WATTS);
+		super(MAX_GENERATE_WATTS);
 	}
 
 	@Override
 	public void updateEntity()
 	{
-        this.setEnergyStored(this.generateWatts);
-        
+		this.setEnergyStored(this.generateWatts);
+
 		super.updateEntity();
 
 		if (!this.worldObj.isRemote)
@@ -99,19 +102,6 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 				this.generateWatts = Math.max(this.generateWatts - 8, 0);
 			}
 
-<<<<<<< HEAD
-			if (this.generateWatts > MIN_GENERATE_WATTS)
-			{
-				if (network != null)
-				{
-					ElectricityPack sendPack = ElectricityPack.getFromWatts(this.generateWatts / this.getVoltage(), this.getVoltage());
-					float producedPower = network.produce(sendPack, this);
-					this.setEnergyStored(this.getEnergyStored() - producedPower);
-				}
-			}
-
-=======
->>>>>>> Update UE. All machines are now compatible with IC2.
 			if (this.ticks % 3 == 0)
 			{
 				for (EntityPlayer player : this.playersUsing)
@@ -344,15 +334,15 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 		return this.generateWatts < TileEntityCoalGenerator.MIN_GENERATE_WATTS ? 0 : this.generateWatts;
 	}
 
-    @Override
-    public ForgeDirection getInputDirection()
-    {
-        return null;
-    }
+	@Override
+	public ForgeDirection getInputDirection()
+	{
+		return null;
+	}
 
-    @Override
-    public ForgeDirection getOutputDirection()
-    {
-        return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.COAL_GENERATOR_METADATA + 2);
-    }
+	@Override
+	public ForgeDirection getOutputDirection()
+	{
+		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.COAL_GENERATOR_METADATA + 2);
+	}
 }

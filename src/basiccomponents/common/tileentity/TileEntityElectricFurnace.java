@@ -2,6 +2,7 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -22,7 +23,9 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -56,7 +59,7 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 
 	public TileEntityElectricFurnace()
 	{
-	    super(1000);
+		super(1000);
 	}
 
 	@Override
@@ -403,15 +406,15 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 		return 0;
 	}
 
-    @Override
-    public ForgeDirection getInputDirection()
-    {
-        return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.ELECTRIC_FURNACE_METADATA + 2);
-    }
+	@Override
+	public ForgeDirection getInputDirection()
+	{
+		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.ELECTRIC_FURNACE_METADATA + 2);
+	}
 
-    @Override
-    public ForgeDirection getOutputDirection()
-    {
-        return null;
-    }
+	@Override
+	public ForgeDirection getOutputDirection()
+	{
+		return null;
+	}
 }

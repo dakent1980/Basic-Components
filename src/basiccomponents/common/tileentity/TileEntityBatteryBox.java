@@ -2,6 +2,7 @@ package basiccomponents.common.tileentity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,9 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -31,7 +34,7 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 
 	public TileEntityBatteryBox()
 	{
-	    super(5000000);
+		super(5000000);
 	}
 
 	@Override
@@ -307,15 +310,15 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 		return direction.equals(this.getOutputDirection()) ? 1300 : 0;
 	}
 
-    @Override
-    public ForgeDirection getInputDirection()
-    {
-        return this.getInput().getOpposite();
-    }
+	@Override
+	public ForgeDirection getInputDirection()
+	{
+		return this.getInput().getOpposite();
+	}
 
-    @Override
-    public ForgeDirection getOutputDirection()
-    {
-        return this.getOutput().getOpposite();
-    }
+	@Override
+	public ForgeDirection getOutputDirection()
+	{
+		return this.getOutput().getOpposite();
+	}
 }
