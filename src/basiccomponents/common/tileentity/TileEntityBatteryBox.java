@@ -44,12 +44,12 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 			/**
 			 * Recharges electric item.
 			 */
-			this.setEnergyStored(this.getEnergyStored() - ElectricItemHelper.chargeItem(this.containingItems[0], this.getEnergyStored()));
+			this.setEnergyStored(this.getEnergyStored() - ElectricItemHelper.chargeItem(this.containingItems[0], this.getProvide(this.getOutputDirection())));
 
 			/**
 			 * Decharge electric item.
 			 */
-			this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dischargeItem(this.containingItems[1], this.getMaxEnergyStored() - this.getEnergyStored()));
+			this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dischargeItem(this.containingItems[1], this.getProvide(this.getOutputDirection())));
 		}
 
 		/**
@@ -287,7 +287,7 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 			}
 			else if (slotID == 1)
 			{
-				return ((IItemElectric) itemstack.getItem()).getElectricityStored(itemstack) <= 0;
+				return ((IItemElectric) itemstack.getItem()).getElectricityStored(itemstack) <= 0 || this.getEnergyStored() >= this.getMaxEnergyStored();
 			}
 		}
 
