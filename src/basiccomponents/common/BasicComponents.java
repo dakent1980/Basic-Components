@@ -592,38 +592,41 @@ public class BasicComponents
 	 */
 	public static void requestAll(Object mod)
 	{
-		BasicComponents.requestItem("ingotCopper", 0);
-		BasicComponents.requestItem("ingotTin", 0);
+		if (CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Allow full registry", true).getBoolean(true))
+		{
+			BasicComponents.requestItem("ingotCopper", 0);
+			BasicComponents.requestItem("ingotTin", 0);
 
-		BasicComponents.requestBlock("oreCopper", 0);
-		BasicComponents.requestBlock("oreTin", 0);
+			BasicComponents.requestBlock("oreCopper", 0);
+			BasicComponents.requestBlock("oreTin", 0);
 
-		BasicComponents.requestItem("ingotSteel", 0);
-		BasicComponents.requestItem("dustSteel", 0);
-		BasicComponents.requestItem("plateSteel", 0);
+			BasicComponents.requestItem("ingotSteel", 0);
+			BasicComponents.requestItem("dustSteel", 0);
+			BasicComponents.requestItem("plateSteel", 0);
 
-		BasicComponents.requestItem("ingotBronze", 0);
-		BasicComponents.requestItem("dustBronze", 0);
-		BasicComponents.requestItem("plateBronze", 0);
+			BasicComponents.requestItem("ingotBronze", 0);
+			BasicComponents.requestItem("dustBronze", 0);
+			BasicComponents.requestItem("plateBronze", 0);
 
-		BasicComponents.requestItem("plateCopper", 0);
-		BasicComponents.requestItem("plateTin", 0);
-		BasicComponents.requestItem("plateIron", 0);
-		BasicComponents.requestItem("plateGold", 0);
+			BasicComponents.requestItem("plateCopper", 0);
+			BasicComponents.requestItem("plateTin", 0);
+			BasicComponents.requestItem("plateIron", 0);
+			BasicComponents.requestItem("plateGold", 0);
 
-		BasicComponents.requestBlock("copperWire", 0);
+			BasicComponents.requestBlock("copperWire", 0);
 
-		BasicComponents.requestItem("circuitBasic", 0);
-		BasicComponents.requestItem("circuitAdvanced", 0);
-		BasicComponents.requestItem("circuitElite", 0);
+			BasicComponents.requestItem("circuitBasic", 0);
+			BasicComponents.requestItem("circuitAdvanced", 0);
+			BasicComponents.requestItem("circuitElite", 0);
 
-		BasicComponents.requestItem("motor", 0);
-		BasicComponents.requestItem("wrench", 0);
-		BasicComponents.requestItem("battery", 0);
-		BasicComponents.requestItem("infiniteBattery", 0);
+			BasicComponents.requestItem("motor", 0);
+			BasicComponents.requestItem("wrench", 0);
+			BasicComponents.requestItem("battery", 0);
+			BasicComponents.requestItem("infiniteBattery", 0);
 
-		requireMachines(mod, 0);
-		registerTileEntities();
+			requireMachines(mod, 0);
+			registerTileEntities();
+		}
 	}
 
 	public static Object getFirstDependant()
