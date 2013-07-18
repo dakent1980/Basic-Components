@@ -16,6 +16,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import universalelectricity.compatibility.Compatibility;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.prefab.ConductorChunkInitiate;
 import universalelectricity.prefab.RecipeHelper;
 import universalelectricity.prefab.TranslationHelper;
 import universalelectricity.prefab.ore.OreGenBase;
@@ -384,6 +385,8 @@ public class BasicComponents
 				{
 					field.set(null, new BlockCopperWire(id));
 					GameRegistry.registerBlock((Block) field.get(null), ItemBlockCopperWire.class, name);
+					
+					ConductorChunkInitiate.register();
 
 					if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 					{
