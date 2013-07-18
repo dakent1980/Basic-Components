@@ -385,7 +385,7 @@ public class BasicComponents
 				{
 					field.set(null, new BlockCopperWire(id));
 					GameRegistry.registerBlock((Block) field.get(null), ItemBlockCopperWire.class, name);
-					
+
 					ConductorChunkInitiate.register();
 
 					if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

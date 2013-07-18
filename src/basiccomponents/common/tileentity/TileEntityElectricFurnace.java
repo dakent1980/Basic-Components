@@ -16,13 +16,10 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.compatibility.TileEntityUniversalElectrical;
 import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
-import basiccomponents.common.block.BlockBasicMachine;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -67,13 +64,7 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	{
 		super.updateEntity();
 
-		/**
-		 * Attempts to charge using batteries.
-		 */
-		if (this.getEnergyStored() < this.getMaxEnergyStored())
-		{
-			this.receiveElectricity(this.getInputDirection(), ElectricityPack.getFromWatts(ElectricItemHelper.dischargeItem(this.containingItems[0], this.getRequest(ForgeDirection.UNKNOWN)), this.getVoltage()), true);
-		}
+		this.discharge(this.containingItems[0]);
 
 		/**
 		 * Attempts to smelt an item.
@@ -404,17 +395,5 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	public float getProvide(ForgeDirection direction)
 	{
 		return 0;
-	}
-
-	@Override
-	public ForgeDirection getInputDirection()
-	{
-		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.ELECTRIC_FURNACE_METADATA + 2);
-	}
-
-	@Override
-	public ForgeDirection getOutputDirection()
-	{
-		return null;
 	}
 }

@@ -1,7 +1,9 @@
 package basiccomponents.common.tileentity;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -12,13 +14,14 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.compatibility.TileEntityUniversalElectrical;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -41,15 +44,8 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 
 		if (!this.worldObj.isRemote)
 		{
-			/**
-			 * Recharges electric item.
-			 */
-			this.setEnergyStored(this.getEnergyStored() - ElectricItemHelper.chargeItem(this.containingItems[0], this.getProvide(this.getOutputDirection())));
-
-			/**
-			 * Decharge electric item.
-			 */
-			this.setEnergyStored(this.getEnergyStored() + ElectricItemHelper.dischargeItem(this.containingItems[1], this.getProvide(this.getOutputDirection())));
+			this.recharge(this.containingItems[0]);
+			this.discharge(this.containingItems[1]);
 		}
 
 		/**
@@ -67,16 +63,6 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 				}
 			}
 		}
-	}
-
-	public ForgeDirection getInput()
-	{
-		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2);
-	}
-
-	public ForgeDirection getOutput()
-	{
-		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite();
 	}
 
 	@Override
@@ -298,29 +284,24 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	@Override
 	public float getRequest(ForgeDirection direction)
 	{
-	    if (!direction.equals(this.getInputDirection()))
-	    {
-	        return 0.0F;
-	    }
-	    
-		return this.getMaxEnergyStored() - this.getEnergyStored();
+		return getInputDirections().contains(direction) ? this.getMaxEnergyStored() - this.getEnergyStored() : 0;
 	}
 
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return direction.equals(this.getOutputDirection()) ? 1300 : 0;
+		return getInputDirections().contains(direction) ? 1300 : 0;
 	}
 
 	@Override
-	public ForgeDirection getInputDirection()
+	public EnumSet<ForgeDirection> getInputDirections()
 	{
-		return this.getInput().getOpposite();
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2));
 	}
 
 	@Override
-	public ForgeDirection getOutputDirection()
+	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return this.getOutput().getOpposite();
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite());
 	}
 }

@@ -1,5 +1,6 @@
 package basiccomponents.common.tileentity;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,6 @@ import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
-import basiccomponents.common.block.BlockBasicMachine;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -335,14 +335,14 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	}
 
 	@Override
-	public ForgeDirection getInputDirection()
+	public EnumSet<ForgeDirection> getInputDirections()
 	{
-		return null;
+		return EnumSet.noneOf(ForgeDirection.class);
 	}
 
 	@Override
-	public ForgeDirection getOutputDirection()
+	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.COAL_GENERATOR_METADATA + 2);
+		return EnumSet.allOf(ForgeDirection.class);
 	}
 }
