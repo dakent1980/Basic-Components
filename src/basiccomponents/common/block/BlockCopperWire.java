@@ -1,15 +1,26 @@
 package basiccomponents.common.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import universalelectricity.prefab.block.BlockConductor;
+import universalelectricity.prefab.tile.TileEntityConductor;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.tileentity.TileEntityCopperWire;
 
+/**
+ * A copper wire block that can change its collision bounds based on the connection.
+ * 
+ * @author Calclavia, Aidancbrady
+ */
 public class BlockCopperWire extends BlockConductor
 {
 	public BlockCopperWire(int id)
@@ -19,7 +30,7 @@ public class BlockCopperWire extends BlockConductor
 		this.setStepSound(soundClothFootstep);
 		this.setResistance(0.2F);
 		this.setHardness(0.1f);
-		this.setBlockBounds(0.30F, 0.30F, 0.30F, 0.70F, 0.70F, 0.70F);
+		this.setBlockBounds(0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f);
 		this.setCreativeTab(CreativeTabs.tabRedstone);
 		Block.setBurnProperties(this.blockID, 30, 60);
 	}
