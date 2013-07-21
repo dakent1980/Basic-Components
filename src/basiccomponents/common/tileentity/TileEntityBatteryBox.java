@@ -32,11 +32,6 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
-	public TileEntityBatteryBox()
-	{
-		super(5000000);
-	}
-
 	@Override
 	public void updateEntity()
 	{
@@ -303,5 +298,11 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite());
+	}
+
+	@Override
+	public float getMaxEnergyStored()
+	{
+		return 5000;
 	}
 }

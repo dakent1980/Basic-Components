@@ -32,7 +32,7 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	/**
 	 * The amount of watts required every TICK.
 	 */
-	public static final float WATTS_PER_TICK = 200;
+	public static final float WATTS_PER_TICK = 10;
 
 	/**
 	 * The amount of processing time required.
@@ -53,11 +53,6 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	 * The amount of players using the electric furnace.
 	 */
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
-
-	public TileEntityElectricFurnace()
-	{
-		super(1000);
-	}
 
 	@Override
 	public void updateEntity()
@@ -395,5 +390,11 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	public float getProvide(ForgeDirection direction)
 	{
 		return 0;
+	}
+
+	@Override
+	public float getMaxEnergyStored()
+	{
+		return WATTS_PER_TICK;
 	}
 }

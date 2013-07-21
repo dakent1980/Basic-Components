@@ -33,7 +33,7 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	/**
 	 * Maximum amount of energy needed to generate electricity
 	 */
-	public static final int MAX_GENERATE_WATTS = 10000;
+	public static final int MAX_GENERATE_WATTS = 10;
 
 	/**
 	 * Amount of heat the coal generator needs before generating electricity.
@@ -58,11 +58,6 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	private ItemStack[] containingItems = new ItemStack[1];
 
 	public final Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
-
-	public TileEntityCoalGenerator()
-	{
-		super(MAX_GENERATE_WATTS);
-	}
 
 	@Override
 	public void updateEntity()
@@ -344,5 +339,11 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
 		return EnumSet.allOf(ForgeDirection.class);
+	}
+
+	@Override
+	public float getMaxEnergyStored()
+	{
+		return MAX_GENERATE_WATTS;
 	}
 }
