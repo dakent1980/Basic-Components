@@ -217,7 +217,6 @@ public class BasicComponents
 					Item item = (Item) field.get(null);
 
 					String ingotName = name.replaceAll("plate", "ingot");
-					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), "!!", "!!", '!', ingotName), CONFIGURATION, true);
 
 					Item itemIngot = null;
 
@@ -238,7 +237,7 @@ public class BasicComponents
 					if (itemIngot != null)
 					{
 						RecipeHelper.addRecipe(new ShapelessOreRecipe(new ItemStack(itemIngot, 4), item), CONFIGURATION, true);
-						RecipeHelper.addRecipe(new ShapelessOreRecipe(item, new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot), new ItemStack(itemIngot)), CONFIGURATION, true);
+						RecipeHelper.addRecipe(new ShapedOreRecipe(item, "II", "II", 'I', itemIngot), CONFIGURATION, true);
 					}
 				}
 				else if (name.contains("dust"))
