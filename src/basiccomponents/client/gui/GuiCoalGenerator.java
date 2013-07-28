@@ -51,7 +51,7 @@ public class GuiCoalGenerator extends GuiContainer
 		}
 		else
 		{
-			displayText = ElectricityDisplay.getDisplay(tileEntity.generateWatts, ElectricUnit.WATT);
+			displayText = ElectricityDisplay.getDisplay(tileEntity.generateWatts * 20, ElectricUnit.WATT);
 		}
 
 		this.fontRenderer.drawString(displayText, (int) (100 - displayText.length() * 1.25), 45, 4210752);

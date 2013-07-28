@@ -3,7 +3,6 @@ package basiccomponents.common.tileentity;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -21,9 +20,7 @@ import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
-
 import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -33,14 +30,14 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	/**
 	 * Maximum amount of energy needed to generate electricity
 	 */
-	public static final int MAX_GENERATE_WATTS = 10;
+	public static final float MAX_GENERATE_WATTS = 10.0F / 20.0F;
 
 	/**
 	 * Amount of heat the coal generator needs before generating electricity.
 	 */
-	public static final int MIN_GENERATE_WATTS = 100;
+	public static final float MIN_GENERATE_WATTS = 0.01F / 20.0F;
 
-	private static final float BASE_ACCELERATION = 0.3f;
+	private static final float BASE_ACCELERATION = 0.000001f;
 
 	/**
 	 * Per second
@@ -76,7 +73,7 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 
 				if (this.getEnergyStored() < this.getMaxEnergyStored())
 				{
-					this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
+					this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.007F + BASE_ACCELERATION), 0.007F), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
 				}
 			}
 
@@ -92,9 +89,9 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 				}
 			}
 
-			if (this.getEnergyStored() >= this.getMaxEnergyStored() || this.itemCookTime <= 0)
+			if (this.itemCookTime <= 0)
 			{
-				this.generateWatts = Math.max(this.generateWatts - 8, 0);
+				this.generateWatts = Math.max(this.generateWatts - 0.008F, 0);
 			}
 
 			if (this.ticks % 3 == 0)
@@ -326,7 +323,12 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return this.generateWatts < TileEntityCoalGenerator.MIN_GENERATE_WATTS ? 0 : this.generateWatts;
+	    if (direction == ForgeDirection.getOrientation(this.getBlockMetadata() + 2))
+	    {
+	        return this.generateWatts < TileEntityCoalGenerator.MIN_GENERATE_WATTS ? 0 : this.generateWatts;
+	    }
+	    
+	    return 0.0F;
 	}
 
 	@Override
@@ -338,7 +340,7 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	@Override
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return EnumSet.allOf(ForgeDirection.class);
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() + 2));
 	}
 
 	@Override
