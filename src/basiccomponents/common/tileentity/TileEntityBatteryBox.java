@@ -3,7 +3,6 @@ package basiccomponents.common.tileentity;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,9 +18,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import basiccomponents.common.BasicComponents;
 import basiccomponents.common.block.BlockBasicMachine;
-
 import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -285,19 +282,19 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getInputDirections().contains(direction) ? 1300 : 0;
+		return getInputDirections().contains(direction) ? Math.min(1.3F, this.getEnergyStored()) : 0;
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getInputDirections()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite());
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite(), ForgeDirection.UNKNOWN);
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2));
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2), ForgeDirection.UNKNOWN);
 	}
 
 	@Override
