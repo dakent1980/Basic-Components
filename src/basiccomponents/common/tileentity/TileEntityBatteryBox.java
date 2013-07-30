@@ -282,7 +282,7 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getInputDirections().contains(direction) ? Math.min(1.3F, this.getEnergyStored()) : 0;
+		return getOutputDirections().contains(direction) ? Math.min(1.3F, this.getEnergyStored()) : 0;
 	}
 
 	@Override
