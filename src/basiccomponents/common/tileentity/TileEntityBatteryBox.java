@@ -303,6 +303,6 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	@Override
 	public float getMaxEnergyStored()
 	{
-		return 5000;
+		return 2500;
 	}
 }
