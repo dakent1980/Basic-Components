@@ -32,7 +32,7 @@ public class TileEntityElectricFurnace extends TileEntityUniversalElectrical imp
 	/**
 	 * The amount of watts required every TICK.
 	 */
-	public static final float WATTS_PER_TICK = 0.8f;
+	public static final float WATTS_PER_TICK = 0.5f;
 
 	/**
 	 * The amount of processing time required.

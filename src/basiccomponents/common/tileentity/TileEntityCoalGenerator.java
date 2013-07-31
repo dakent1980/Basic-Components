@@ -33,14 +33,15 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	/**
 	 * Maximum amount of energy needed to generate electricity
 	 */
-	public static final float MAX_GENERATE_WATTS = 0.8f;
+	public static final float MAX_GENERATE_WATTS = 0.5f;
 
 	/**
 	 * Amount of heat the coal generator needs before generating electricity.
 	 */
-	public static final float MIN_GENERATE_WATTS = 0.1f;
+	
+	public static final float MIN_GENERATE_WATTS = MAX_GENERATE_WATTS * 0.1f;
 
-	private static final float BASE_ACCELERATION = 0.3f;
+	private static final float BASE_ACCELERATION = 0.000001f;
 
 	/**
 	 * Per second
@@ -76,7 +77,7 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 
 				if (this.getEnergyStored() < this.getMaxEnergyStored())
 				{
-					this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.005F + BASE_ACCELERATION), 5), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
+					this.generateWatts = Math.min(this.generateWatts + Math.min((this.generateWatts * 0.007F + BASE_ACCELERATION), 0.007F), TileEntityCoalGenerator.MAX_GENERATE_WATTS);
 				}
 			}
 
@@ -92,9 +93,9 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 				}
 			}
 
-			if (this.getEnergyStored() >= this.getMaxEnergyStored() || this.itemCookTime <= 0)
+			if (this.itemCookTime <= 0)
 			{
-				this.generateWatts = Math.max(this.generateWatts - 8, 0);
+				this.generateWatts = Math.max(this.generateWatts - 0.008F, 0);
 			}
 
 			if (this.ticks % 3 == 0)
@@ -326,7 +327,12 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return this.generateWatts < TileEntityCoalGenerator.MIN_GENERATE_WATTS ? 0 : this.generateWatts;
+	    if (direction == ForgeDirection.getOrientation(this.getBlockMetadata() + 2))
+	    {
+	        return this.generateWatts < TileEntityCoalGenerator.MIN_GENERATE_WATTS ? 0 : this.generateWatts;
+	    }
+	    
+	    return 0.0F;
 	}
 
 	@Override
@@ -338,7 +344,7 @@ public class TileEntityCoalGenerator extends TileEntityUniversalElectrical imple
 	@Override
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return EnumSet.allOf(ForgeDirection.class);
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() + 2));
 	}
 
 	@Override

@@ -285,19 +285,19 @@ public class TileEntityBatteryBox extends TileEntityUniversalElectrical implemen
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getInputDirections().contains(direction) ? 1300 : 0;
+		return getOutputDirections().contains(direction) ? Math.min(1.3F, this.getEnergyStored()) : 0;
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getInputDirections()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2));
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite(), ForgeDirection.UNKNOWN);
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getOutputDirections()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2).getOpposite());
+		return EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() - BlockBasicMachine.BATTERY_BOX_METADATA + 2), ForgeDirection.UNKNOWN);
 	}
 
 	@Override

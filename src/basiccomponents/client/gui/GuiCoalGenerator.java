@@ -38,8 +38,8 @@ public class GuiCoalGenerator extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		this.fontRenderer.drawString(this.tileEntity.getInvName(), 55, 6, 4210752);
-		this.fontRenderer.drawString("Generating", 90, 33, 4210752);
-		String displayText = "";
+        String displayText = "Generating";
+		this.fontRenderer.drawString(displayText, 122 - this.fontRenderer.getStringWidth(displayText) / 2, 33, 4210752);
 
 		if (this.tileEntity.generateWatts <= 0)
 		{
@@ -51,11 +51,12 @@ public class GuiCoalGenerator extends GuiContainer
 		}
 		else
 		{
-			displayText = ElectricityDisplay.getDisplay(tileEntity.generateWatts, ElectricUnit.WATT);
+			displayText = ElectricityDisplay.getDisplay(tileEntity.generateWatts * 20, ElectricUnit.WATT);
 		}
 
-		this.fontRenderer.drawString(displayText, (int) (100 - displayText.length() * 1.25), 45, 4210752);
-		this.fontRenderer.drawString("Voltage: " + (int) this.tileEntity.getVoltage(), 85, 60, 4210752);
+		this.fontRenderer.drawString(displayText, 122 - this.fontRenderer.getStringWidth(displayText) / 2, 45, 4210752);
+		displayText = "Voltage: " + (int) (this.tileEntity.getVoltage() * 1000);
+		this.fontRenderer.drawString(displayText, 122 - this.fontRenderer.getStringWidth(displayText) / 2, 60, 4210752);
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 
