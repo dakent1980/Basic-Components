@@ -1,8 +1,8 @@
-package basiccomponents.common;
+package basiccomponents;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,68 +13,53 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import universalelectricity.compatibility.Compatibility;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.prefab.ConductorChunkInitiate;
 import universalelectricity.prefab.RecipeHelper;
 import universalelectricity.prefab.TranslationHelper;
 import universalelectricity.prefab.ore.OreGenBase;
 import universalelectricity.prefab.ore.OreGenReplaceStone;
 import universalelectricity.prefab.ore.OreGenerator;
-import basiccomponents.client.RenderCopperWire;
-import basiccomponents.common.block.BlockBase;
-import basiccomponents.common.block.BlockBasicMachine;
-import basiccomponents.common.block.BlockCopperWire;
-import basiccomponents.common.item.ItemBase;
-import basiccomponents.common.item.ItemBattery;
-import basiccomponents.common.item.ItemBlockBasicMachine;
-import basiccomponents.common.item.ItemBlockCopperWire;
-import basiccomponents.common.item.ItemInfiniteBattery;
-import basiccomponents.common.item.ItemIngot;
-import basiccomponents.common.item.ItemPlate;
-import basiccomponents.common.item.ItemWrench;
-import basiccomponents.common.tileentity.TileEntityBatteryBox;
-import basiccomponents.common.tileentity.TileEntityCoalGenerator;
-import basiccomponents.common.tileentity.TileEntityCopperWire;
-import basiccomponents.common.tileentity.TileEntityElectricFurnace;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
+import basiccomponents.api.BasicRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ModMetadata;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * The main class for managing Basic Component items and blocks. Reference objects from this class
- * to add them to your recipes and such.
- * 
- * @author Calclavia
- */
-
+@Mod(modid = BasicComponents.ID, name = BasicComponents.NAME, version = BasicComponents.VERSION, dependencies = "after:*")
+@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class BasicComponents
 {
+	public static final String ID = "BasicComponents";
 	public static final String NAME = "Basic Components";
-	public static String CHANNEL = "";
+	public static String CHANNEL = "basicComponents";
 
-	public static final String RESOURCE_PATH = "/assets/basiccomponents/";
+	public static final String MAJOR_VERSION = "@MAJOR@";
+	public static final String MINOR_VERSION = "@MINOR@";
+	public static final String REVISION_VERSION = "@REVIS@";
+	public static final String BUILD_VERSION = "@BUILD@";
+	public static final String VERSION = MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION;
+
+	@Mod.Metadata(ID)
+	public static ModMetadata metadata;
 
 	/**
-	 * The Universal Electricity configuration file.
+	 * The configuration file.
 	 */
-	public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), "BasicComponents.cfg"));
+	public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), NAME + ".cfg"));
 
+	public static final String RESOURCE_PATH = "/assets/basiccomponents/";
 	public static final String TEXTURE_DIRECTORY = RESOURCE_PATH + "textures/";
-	public static final String GUI_DIRECTORY = TEXTURE_DIRECTORY + "gui/";
 	public static final String BLOCK_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "blocks/";
 	public static final String ITEM_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "items/";
 	public static final String MODEL_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "models/";
 
-	public static final String TEXTURE_DOMAIN = "basiccomponents";
-	public static final String TEXTURE_NAME_PREFIX = TEXTURE_DOMAIN + ":";
+	public static final String DOMAIN = "basiccomponents";
+	public static final String PREFIX = DOMAIN + ":";
 
 	public static final String LANGUAGE_PATH = RESOURCE_PATH + "languages/";
 	private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US", "zh_CN", "es_ES", "it_IT", "nl_NL", "de_DE" };
@@ -94,21 +79,9 @@ public class BasicComponents
 	public static Block blockOreTin;
 	public static final int idOreTin = BLOCK_ID_PREFIX + 1;
 
-	public static Block blockCopperWire;
-	public static final int idCopperWire = BLOCK_ID_PREFIX + 2;
-
-	public static Block blockMachine;
-	public static final int idMachine = BLOCK_ID_PREFIX + 3;
-
 	/**
 	 * Items
 	 */
-	public static Item itemBattery;
-	public static final int idBattery = ITEM_ID_PREFIX + 0;
-
-	public static Item itemInfiniteBattery;
-	public static final int idInfiniteBattery = ITEM_ID_PREFIX + 1;
-
 	public static Item itemWrench;
 	public static final int idWrench = ITEM_ID_PREFIX + 2;
 
@@ -162,19 +135,40 @@ public class BasicComponents
 
 	public static OreGenBase generationOreCopper, generationOreTin;
 
-	public static boolean INITIALIZED = false;
-
-	private static boolean registeredTileEntities = false;
-
-	public static final ArrayList bcDependants = new ArrayList();
-
-	public static void init()
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent evt)
 	{
-		if (!INITIALIZED)
+		CONFIGURATION.load();
+
+		for (String request : BasicRegistry.requests)
 		{
-			System.out.println("Basic Components Loaded: " + TranslationHelper.loadLanguages(BasicComponents.LANGUAGE_PATH, LANGUAGES_SUPPORTED) + " Languages.");
-			INITIALIZED = true;
+			if (request.contains("block"))
+			{
+				this.requestBlock(request, 0);
+			}
+			else if (request.contains("item"))
+			{
+				this.requestItem(request, 0);
+			}
 		}
+
+		CONFIGURATION.save();
+	}
+
+	@EventHandler
+	public void init(FMLInitializationEvent evt)
+	{
+		System.out.println("Basic Components Loaded: " + TranslationHelper.loadLanguages(LANGUAGE_PATH, LANGUAGES_SUPPORTED) + " Languages.");
+
+		metadata.modId = ID;
+		metadata.name = NAME;
+		metadata.description = "Resonant Induction is a Minecraft mod focusing on the manipulation of electricity and wireless technology. Ever wanted blazing electrical shocks flying off your evil lairs? You've came to the right place!";
+		metadata.url = "http://universalelectricity.com/resonant-induction";
+		metadata.logoFile = "/ri_logo.png";
+		metadata.version = VERSION + BUILD_VERSION;
+		metadata.authorList = Arrays.asList(new String[] { "Calclavia", "Aidancbrady" });
+		metadata.credits = "Thanks to Archadia for the awesome assets!";
+		metadata.autogenerated = false;
 	}
 
 	/**
@@ -193,19 +187,17 @@ public class BasicComponents
 	 */
 	public static Item requireItem(String name, int id)
 	{
-		init();
-
 		try
 		{
-			Field field = ReflectionHelper.findField(BasicComponents.class, "item" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+			Field field = ReflectionHelper.findField(BasicRegistry.class, name);
 			Item f = (Item) field.get(null);
 
-			Field idField = ReflectionHelper.findField(BasicComponents.class, "id" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+			// Grabs the default ID.
+			Field idField = ReflectionHelper.findField(BasicRegistry.class, "id" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 			id = id <= 0 ? (Integer) idField.get(null) : id;
 
 			if (f == null)
 			{
-				CONFIGURATION.load();
 
 				if (name.contains("ingot"))
 				{
@@ -278,18 +270,6 @@ public class BasicComponents
 						RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(item), " S ", " SS", "S  ", 'S', Item.ingotIron), CONFIGURATION, true);
 					}
 				}
-				else if (name.equals("battery"))
-				{
-					field.set(null, new ItemBattery(name, id));
-					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(itemBattery), " T ", "TRT", "TCT", 'T', "ingotTin", 'R', Item.redstone, 'C', Item.coal), CONFIGURATION, true);
-					OreDictionary.registerOre(name, ElectricItemHelper.getUncharged(BasicComponents.itemBattery));
-				}
-				else if (name.equals("infiniteBattery"))
-				{
-					itemInfiniteBattery = new ItemInfiniteBattery(name, id);
-					OreDictionary.registerOre(name, ElectricItemHelper.getUncharged(itemInfiniteBattery));
-
-				}
 				else
 				{
 					field.set(null, new ItemBase(name, id).setCreativeTab(CreativeTabs.tabMaterials));
@@ -331,7 +311,6 @@ public class BasicComponents
 
 				Item item = (Item) field.get(null);
 				OreDictionary.registerOre(name, item);
-				CONFIGURATION.save();
 
 				FMLLog.info("Basic Components: Successfully requested item: " + name);
 				return item;
@@ -367,11 +346,9 @@ public class BasicComponents
 
 	public static Block requireBlock(String name, int id)
 	{
-		init();
-
 		try
 		{
-			Field field = ReflectionHelper.findField(BasicComponents.class, "block" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+			Field field = ReflectionHelper.findField(BasicComponents.class, name);
 			Block f = (Block) field.get(null);
 			Field idField = ReflectionHelper.findField(BasicComponents.class, "id" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 			id = id <= 0 ? (Integer) idField.get(null) : id;
@@ -380,34 +357,7 @@ public class BasicComponents
 			{
 				CONFIGURATION.load();
 
-				if (name.equals("copperWire"))
-				{
-					field.set(null, new BlockCopperWire(id));
-					GameRegistry.registerBlock((Block) field.get(null), ItemBlockCopperWire.class, name);
-
-					ConductorChunkInitiate.register();
-
-					if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-					{
-						try
-						{
-							registerCopperWireRenderer();
-						}
-						catch (Exception e)
-						{
-							FMLLog.severe("Basic Components copper wire registry error!");
-							e.printStackTrace();
-						}
-					}
-
-					GameRegistry.registerTileEntity(TileEntityCopperWire.class, "copperWire");
-					// proxy.registerCopperWireTileEntity();
-
-					RecipeHelper.addRecipe(new ShapedOreRecipe(new ItemStack(blockCopperWire, 6), new Object[] { "WWW", "CCC", "WWW", 'W', Block.cloth, 'C', "ingotCopper" }), CONFIGURATION, true);
-
-					UniversalElectricity.isNetworkActive = true;
-				}
-				else if (name.contains("ore"))
+				if (name.contains("ore"))
 				{
 					field.set(null, new BlockBase(name, id));
 					Block block = (Block) field.get(null);
@@ -444,12 +394,6 @@ public class BasicComponents
 		return null;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private static void registerCopperWireRenderer() throws Exception
-	{
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCopperWire.class, new RenderCopperWire());
-	}
-
 	public static Block requestBlock(String name, int id)
 	{
 		if (OreDictionary.getOres(name).size() <= 0)
@@ -467,177 +411,4 @@ public class BasicComponents
 		return null;
 	}
 
-	@Deprecated
-	public static Item requireBattery(int id)
-	{
-		return requestItem("battery", id);
-	}
-
-	@Deprecated
-	public static Item requireInfiniteBattery(int id)
-	{
-		return requestItem("infiniteBattery", id);
-	}
-
-	/**
-	 * Kept for backwards compatibility
-	 */
-	@Deprecated
-	public static ItemStack requireMachines(int id)
-	{
-		return requireMachines(null, id);
-	}
-
-	/**
-	 * Require Battery Box, Coal Generator and Electric Furnace. Adds mod object to list of GUI
-	 * managers as well.
-	 * 
-	 * @param mod The object of the mod requiring machines
-	 */
-	public static ItemStack requireMachines(Object mod, int id)
-	{
-		if (blockMachine == null)
-		{
-			Compatibility.initiate();
-
-			id = id <= 0 ? idMachine : id;
-			BasicComponents.CONFIGURATION.load();
-			BasicComponents.blockMachine = new BlockBasicMachine(BasicComponents.CONFIGURATION.getBlock("Basic Machine", id).getInt(id), 0);
-			GameRegistry.registerBlock(BasicComponents.blockMachine, ItemBlockBasicMachine.class, "Basic Machine");
-
-			OreDictionary.registerOre("coalGenerator", ((BlockBasicMachine) BasicComponents.blockMachine).getCoalGenerator());
-			OreDictionary.registerOre("batteryBox", ((BlockBasicMachine) BasicComponents.blockMachine).getBatteryBox());
-			OreDictionary.registerOre("electricFurnace", ((BlockBasicMachine) BasicComponents.blockMachine).getElectricFurnace());
-
-			// Battery Box
-			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("batteryBox").get(0), new Object[] { "SSS", "BBB", "SSS", 'B', "battery", 'S', "ingotSteel" }), CONFIGURATION, true);
-			// Coal Generator
-			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotSteel", 'C', "motor", 'O', Block.furnaceIdle }), CONFIGURATION, true);
-			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("coalGenerator").get(0), new Object[] { "MMM", "MOM", "MCM", 'M', "ingotBronze", 'C', "motor", 'O', Block.furnaceIdle }), CONFIGURATION, true);
-			// Electric Furnace
-			RecipeHelper.addRecipe(new ShapedOreRecipe(OreDictionary.getOres("electricFurnace").get(0), new Object[] { "SSS", "SCS", "SMS", 'S', "ingotSteel", 'C', "circuitAdvanced", 'M', "motor" }), CONFIGURATION, true);
-
-			BasicComponents.CONFIGURATION.save();
-		}
-
-		if (mod != null)
-		{
-			bcDependants.add(mod);
-			NetworkRegistry.instance().registerGuiHandler(mod, new BCGuiHandler());
-		}
-
-		return new ItemStack(blockMachine);
-	}
-
-	/**
-	 * Call this to register Tile Entities
-	 * 
-	 * @return
-	 */
-	public static void registerTileEntities()
-	{
-		if (!registeredTileEntities)
-		{
-			GameRegistry.registerTileEntity(TileEntityBatteryBox.class, "UEBatteryBox");
-			GameRegistry.registerTileEntity(TileEntityCoalGenerator.class, "UECoalGenerator");
-			GameRegistry.registerTileEntity(TileEntityElectricFurnace.class, "UEElectricFurnace");
-			registeredTileEntities = true;
-		}
-	}
-
-	/**
-	 * Called when all items are registered. Only call once per mod.
-	 */
-	public static void register(String channel)
-	{
-		CHANNEL = channel;
-
-		/**
-		 * Register Smelting Recipes
-		 * 
-		 * Registers recipes that are dependent on order.
-		 */
-
-		if (itemDustBronze != null)
-		{
-			if (OreDictionary.getOres("ingotBronze").size() > 0)
-			{
-				GameRegistry.addSmelting(itemDustBronze.itemID, OreDictionary.getOres("ingotBronze").get(0), 0.6f);
-			}
-		}
-
-		if (itemDustSteel != null)
-		{
-			if (OreDictionary.getOres("ingotSteel").size() > 0)
-			{
-				GameRegistry.addSmelting(itemDustSteel.itemID, OreDictionary.getOres("ingotSteel").get(0), 0.6f);
-			}
-		}
-
-		// Copper
-		if (blockOreCopper != null)
-		{
-			GameRegistry.addSmelting(blockOreCopper.blockID, OreDictionary.getOres("ingotCopper").get(0), 0.7f);
-		}
-
-		// Tin
-		if (blockOreTin != null)
-		{
-			GameRegistry.addSmelting(blockOreTin.blockID, OreDictionary.getOres("ingotTin").get(0), 0.7f);
-		}
-	}
-
-	/**
-	 * Requests all items in Basic Components
-	 * 
-	 * @param mod The object of the mod requiring components
-	 */
-	public static void requestAll(Object mod)
-	{
-		if (CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Allow full registry", true).getBoolean(true))
-		{
-			BasicComponents.requestItem("ingotCopper", 0);
-			BasicComponents.requestItem("ingotTin", 0);
-
-			BasicComponents.requestBlock("oreCopper", 0);
-			BasicComponents.requestBlock("oreTin", 0);
-
-			BasicComponents.requestItem("ingotSteel", 0);
-			BasicComponents.requestItem("dustSteel", 0);
-			BasicComponents.requestItem("plateSteel", 0);
-
-			BasicComponents.requestItem("ingotBronze", 0);
-			BasicComponents.requestItem("dustBronze", 0);
-			BasicComponents.requestItem("plateBronze", 0);
-
-			BasicComponents.requestItem("plateCopper", 0);
-			BasicComponents.requestItem("plateTin", 0);
-			BasicComponents.requestItem("plateIron", 0);
-			BasicComponents.requestItem("plateGold", 0);
-
-			BasicComponents.requestBlock("copperWire", 0);
-
-			BasicComponents.requestItem("circuitBasic", 0);
-			BasicComponents.requestItem("circuitAdvanced", 0);
-			BasicComponents.requestItem("circuitElite", 0);
-
-			BasicComponents.requestItem("motor", 0);
-			BasicComponents.requestItem("wrench", 0);
-			BasicComponents.requestItem("battery", 0);
-			BasicComponents.requestItem("infiniteBattery", 0);
-
-			requireMachines(mod, 0);
-			registerTileEntities();
-		}
-	}
-
-	public static Object getFirstDependant()
-	{
-		if (bcDependants.size() > 0)
-		{
-			return bcDependants.get(0);
-		}
-
-		return null;
-	}
 }

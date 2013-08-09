@@ -1,8 +1,7 @@
-package basiccomponents.common.item;
+package basiccomponents;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.Icon;
-import basiccomponents.common.BasicComponents;
 
 /**
  * An Base Item Class for Basic Components. Do not use this! Make your own!
@@ -17,8 +16,8 @@ public class ItemBase extends Item
 	public ItemBase(String name, int id)
 	{
 		super(BasicComponents.CONFIGURATION.getItem(name, id).getInt(id));
-		this.setUnlocalizedName(BasicComponents.TEXTURE_NAME_PREFIX + name);
-		this.func_111206_d(BasicComponents.TEXTURE_NAME_PREFIX + name);
+		this.setUnlocalizedName(BasicComponents.PREFIX + name);
+		this.func_111206_d(BasicComponents.PREFIX + name);
 		this.setNoRepair();
 	}
 }

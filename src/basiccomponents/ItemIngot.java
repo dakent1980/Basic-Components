@@ -1,10 +1,10 @@
-package basiccomponents.common.item;
+package basiccomponents;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-public class ItemPlate extends ItemBase
+public class ItemIngot extends ItemBase
 {
-	public ItemPlate(String name, int id)
+	public ItemIngot(String name, int id)
 	{
 		super(name, id);
 		this.setCreativeTab(CreativeTabs.tabMaterials);

@@ -1,4 +1,4 @@
-package basiccomponents.common.item;
+package basiccomponents;
 
 import java.util.List;
 

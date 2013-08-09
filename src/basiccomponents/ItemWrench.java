@@ -1,4 +1,4 @@
-package basiccomponents.common.item;
+package basiccomponents;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;

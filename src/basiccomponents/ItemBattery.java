@@ -1,10 +1,9 @@
-package basiccomponents.common.item;
+package basiccomponents;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.ItemElectric;
-import basiccomponents.common.BasicComponents;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -13,7 +12,7 @@ public class ItemBattery extends ItemElectric
 	public ItemBattery(String name, int id)
 	{
 		super(BasicComponents.CONFIGURATION.getItem(name, id).getInt(id));
-		this.setUnlocalizedName(BasicComponents.TEXTURE_NAME_PREFIX + name);
+		this.setUnlocalizedName(BasicComponents.PREFIX + name);
 		this.setCreativeTab(CreativeTabs.tabRedstone);
 	}
 
