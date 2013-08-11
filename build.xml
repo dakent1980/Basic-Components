@@ -13,10 +13,15 @@
 		
 		<copy todir="${dir.development}">
 			<fileset dir="../Minecraft Forge Latest/" />
+			
 		</copy>
 
 		<copy todir="${dir.mcp}/src/minecraft">
 			<fileset dir="${dir.development}src">
+				<exclude name=".git/**"/>
+				<exclude name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.development}Universal-Electricity/src">
 				<exclude name=".git/**"/>
 				<exclude name="**/*.xml"/>
 			</fileset>
