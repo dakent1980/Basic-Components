@@ -28,30 +28,30 @@ public class BasicRegistry
 	 */
 	public static void requestAll()
 	{
-		register("ingotCopper");
-		register("ingotTin");
+		register("itemIngotCopper");
+		register("itemIngotTin");
 
-		register("oreCopper");
-		register("oreTin");
+		register("blockOreCopper");
+		register("blockOreTin");
 
-		register("ingotSteel");
-		register("dustSteel");
-		register("plateSteel");
+		register("itemIngotSteel");
+		register("itemDustSteel");
+		register("itemPlateSteel");
 
-		register("ingotBronze");
-		register("dustBronze");
-		register("plateBronze");
+		register("itemIngotBronze");
+		register("itemDustBronze");
+		register("itemPlateBronze");
 
-		register("plateCopper");
-		register("plateTin");
-		register("plateIron");
-		register("plateGold");
+		register("itemPlateCopper");
+		register("itemPlateTin");
+		register("itemPlateIron");
+		register("itemPlateGold");
 
-		register("circuitBasic");
-		register("circuitAdvanced");
-		register("circuitElite");
+		register("itemCircuitBasic");
+		register("itemCircuitAdvanced");
+		register("itemCircuitElite");
 
-		register("motor");
-		register("wrench");
+		register("itemMotor");
+		register("itemWrench");
 	}
 }

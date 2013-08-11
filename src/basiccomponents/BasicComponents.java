@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.MinecraftException;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -22,10 +23,9 @@ import basiccomponents.api.BasicRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -74,71 +74,73 @@ public class BasicComponents
 	 * Blocks
 	 */
 	public static Block blockOreCopper;
-	public static final int idOreCopper = BLOCK_ID_PREFIX + 0;
+	public static final int idBlockOreCopper = BLOCK_ID_PREFIX + 0;
 
 	public static Block blockOreTin;
-	public static final int idOreTin = BLOCK_ID_PREFIX + 1;
+	public static final int idBlockOreTin = BLOCK_ID_PREFIX + 1;
 
 	/**
 	 * Items
 	 */
 	public static Item itemWrench;
-	public static final int idWrench = ITEM_ID_PREFIX + 2;
+	public static final int idItemWrench = ITEM_ID_PREFIX + 2;
 
 	public static Item itemMotor;
-	public static final int idMotor = ITEM_ID_PREFIX + 3;
+	public static final int idItemMotor = ITEM_ID_PREFIX + 3;
 
 	public static Item itemCircuitBasic;
-	public static final int idCircuitBasic = ITEM_ID_PREFIX + 4;
+	public static final int idItemCircuitBasic = ITEM_ID_PREFIX + 4;
 
 	public static Item itemCircuitAdvanced;
-	public static final int idCircuitAdvanced = ITEM_ID_PREFIX + 5;
+	public static final int idItemCircuitAdvanced = ITEM_ID_PREFIX + 5;
 
 	public static Item itemCircuitElite;
-	public static final int idCircuitElite = ITEM_ID_PREFIX + 6;
+	public static final int idItemCircuitElite = ITEM_ID_PREFIX + 6;
 
 	public static Item itemPlateCopper;
-	public static final int idPlateCopper = ITEM_ID_PREFIX + 7;
+	public static final int idItemPlateCopper = ITEM_ID_PREFIX + 7;
 
 	public static Item itemPlateTin;
-	public static final int idPlateTin = ITEM_ID_PREFIX + 8;
+	public static final int idItemPlateTin = ITEM_ID_PREFIX + 8;
 
 	public static Item itemPlateBronze;
-	public static final int idPlateBronze = ITEM_ID_PREFIX + 9;
+	public static final int idItemPlateBronze = ITEM_ID_PREFIX + 9;
 
 	public static Item itemPlateSteel;
-	public static final int idPlateSteel = ITEM_ID_PREFIX + 10;
+	public static final int idItemPlateSteel = ITEM_ID_PREFIX + 10;
 
 	public static Item itemPlateIron;
-	public static final int idPlateIron = ITEM_ID_PREFIX + 11;
+	public static final int idItemPlateIron = ITEM_ID_PREFIX + 11;
 
 	public static Item itemPlateGold;
-	public static final int idPlateGold = ITEM_ID_PREFIX + 12;
+	public static final int idItemPlateGold = ITEM_ID_PREFIX + 12;
 
 	public static Item itemIngotCopper;
-	public static final int idIngotCopper = ITEM_ID_PREFIX + 13;
+	public static final int idItemIngotCopper = ITEM_ID_PREFIX + 13;
 
 	public static Item itemIngotTin;
-	public static final int idIngotTin = ITEM_ID_PREFIX + 14;
+	public static final int idItemIngotTin = ITEM_ID_PREFIX + 14;
 
 	public static Item itemIngotSteel;
-	public static final int idIngotSteel = ITEM_ID_PREFIX + 15;
+	public static final int idItemIngotSteel = ITEM_ID_PREFIX + 15;
 
 	public static Item itemIngotBronze;
-	public static final int idIngotBronze = ITEM_ID_PREFIX + 16;
+	public static final int idItemIngotBronze = ITEM_ID_PREFIX + 16;
 
 	public static Item itemDustSteel;
-	public static final int idDustSteel = ITEM_ID_PREFIX + 17;
+	public static final int idItemDustSteel = ITEM_ID_PREFIX + 17;
 
 	public static Item itemDustBronze;
-	public static final int idDustBronze = ITEM_ID_PREFIX + 18;
+	public static final int idItemDustBronze = ITEM_ID_PREFIX + 18;
 
 	public static OreGenBase generationOreCopper, generationOreTin;
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent evt)
+	public void init(FMLInitializationEvent evt) throws MinecraftException
 	{
 		CONFIGURATION.load();
+
+		FMLLog.fine("Basic Components: Attempting to load " + BasicRegistry.requests.size() + " items.");
 
 		for (String request : BasicRegistry.requests)
 		{
@@ -150,14 +152,14 @@ public class BasicComponents
 			{
 				this.requestItem(request, 0);
 			}
+			else
+			{
+				throw new MinecraftException("Failed to load Basic Components item.");
+			}
 		}
 
 		CONFIGURATION.save();
-	}
 
-	@EventHandler
-	public void init(FMLInitializationEvent evt)
-	{
 		System.out.println("Basic Components Loaded: " + TranslationHelper.loadLanguages(LANGUAGE_PATH, LANGUAGES_SUPPORTED) + " Languages.");
 
 		metadata.modId = ID;
@@ -185,15 +187,18 @@ public class BasicComponents
 	 * @param id - The specified ID of the item. Use 0 for a default value to be used.
 	 * @return The Item/Block class.
 	 */
-	public static Item requireItem(String name, int id)
+	public static Item requireItem(String fieldName, int id)
 	{
 		try
 		{
-			Field field = ReflectionHelper.findField(BasicRegistry.class, name);
+			String name = fieldName.replace("item", "");
+			name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
+
+			Field field = ReflectionHelper.findField(BasicComponents.class, fieldName);
 			Item f = (Item) field.get(null);
 
 			// Grabs the default ID.
-			Field idField = ReflectionHelper.findField(BasicRegistry.class, "id" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+			Field idField = ReflectionHelper.findField(BasicComponents.class, "id" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
 			id = id <= 0 ? (Integer) idField.get(null) : id;
 
 			if (f == null)
@@ -310,6 +315,7 @@ public class BasicComponents
 				}
 
 				Item item = (Item) field.get(null);
+				GameRegistry.registerItem(item, name);
 				OreDictionary.registerOre(name, item);
 
 				FMLLog.info("Basic Components: Successfully requested item: " + name);
@@ -320,7 +326,7 @@ public class BasicComponents
 		}
 		catch (Exception e)
 		{
-			FMLLog.severe("Basic Components: Failed to require item: " + name);
+			FMLLog.severe("Basic Components: Failed to require item: " + fieldName);
 			e.printStackTrace();
 		}
 
@@ -344,19 +350,20 @@ public class BasicComponents
 		return null;
 	}
 
-	public static Block requireBlock(String name, int id)
+	public static Block requireBlock(String fieldName, int id)
 	{
 		try
 		{
-			Field field = ReflectionHelper.findField(BasicComponents.class, name);
+			String name = fieldName.replace("block", "");
+			name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
+
+			Field field = ReflectionHelper.findField(BasicComponents.class, fieldName);
 			Block f = (Block) field.get(null);
-			Field idField = ReflectionHelper.findField(BasicComponents.class, "id" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+			Field idField = ReflectionHelper.findField(BasicComponents.class, "id" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
 			id = id <= 0 ? (Integer) idField.get(null) : id;
 
 			if (f == null)
 			{
-				CONFIGURATION.load();
-
 				if (name.contains("ore"))
 				{
 					field.set(null, new BlockBase(name, id));
@@ -376,8 +383,6 @@ public class BasicComponents
 				}
 
 				Block block = (Block) field.get(null);
-				OreDictionary.registerOre(name, block);
-				CONFIGURATION.save();
 
 				FMLLog.info("Basic Components: Successfully requested block: " + name);
 				return block;
@@ -387,7 +392,7 @@ public class BasicComponents
 		}
 		catch (Exception e)
 		{
-			FMLLog.severe("Basic Components: Failed to require block: " + name);
+			FMLLog.severe("Basic Components: Failed to require block: " + fieldName);
 			e.printStackTrace();
 		}
 
