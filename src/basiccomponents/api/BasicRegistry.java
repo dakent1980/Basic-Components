@@ -1,6 +1,6 @@
 package basiccomponents.api;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class BasicRegistry
 {
-	public static final Set<String> requests = new HashSet<String>();
+	public static final Set<String> requests = new LinkedHashSet<String>();
 
 	/**
 	 * @param request - Name of the item/block to register. Use the EXACT FIELD NAME of the
