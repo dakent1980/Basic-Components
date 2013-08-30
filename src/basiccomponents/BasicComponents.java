@@ -154,7 +154,7 @@ public class BasicComponents
 			}
 			else
 			{
-				throw new MinecraftException("Failed to load Basic Components item.");
+				FMLLog.severe("Failed to load Basic Components item: " + request);
 			}
 		}
 
