@@ -146,11 +146,11 @@ public class BasicComponents
 		{
 			if (request.contains("block"))
 			{
-				this.requestBlock(request, 0);
+				BasicComponents.requestBlock(request, 0);
 			}
 			else if (request.contains("item"))
 			{
-				this.requestItem(request, 0);
+				BasicComponents.requestItem(request, 0);
 			}
 			else
 			{

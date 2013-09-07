@@ -11,7 +11,7 @@ public class BlockBase extends Block
 		super(BasicComponents.CONFIGURATION.getItem(name, id).getInt(id), Material.rock);
 		this.setCreativeTab(CreativeTabs.tabBlock);
 		this.setUnlocalizedName(BasicComponents.PREFIX + name);
-		this.func_111022_d(BasicComponents.PREFIX + name);
+		this.setTextureName(BasicComponents.PREFIX + name);
 		this.setHardness(2f);
 	}
 }
