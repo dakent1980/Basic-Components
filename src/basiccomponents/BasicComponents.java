@@ -62,7 +62,7 @@ public class BasicComponents
 	public static final String PREFIX = DOMAIN + ":";
 
 	public static final String LANGUAGE_PATH = RESOURCE_PATH + "languages/";
-	private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US", "zh_CN", "es_ES", "it_IT", "nl_NL", "de_DE", "tr_TR" };
+	private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US", "zh_CN", "es_ES", "it_IT", "nl_NL", "de_DE", "tr_TR", "ru_RU" };
 
 	/**
 	 * Auto-incrementing configuration IDs. Use this to make sure no config ID is the same.
