@@ -206,7 +206,9 @@ public class BasicComponents
 
 				if (name.contains("ingot"))
 				{
-					field.set(null, new ItemIngot(name, id));
+				    ItemIngot ingot = new ItemIngot(name, id);
+					field.set(null, ingot);
+					OreDictionary.registerOre(name, ingot);
 				}
 				else if (name.contains("plate"))
 				{
@@ -369,9 +371,8 @@ public class BasicComponents
 					field.set(null, new BlockBase(name, id));
 					Block block = (Block) field.get(null);
 					GameRegistry.registerBlock(block, name);
-
-					String ingotName = name.replaceAll("ore", "ingot");
-
+					OreDictionary.registerOre(name, block);
+					
 					if (OreDictionary.getOres(ingotName).size() > 0)
 					{
 						GameRegistry.addSmelting(block.blockID, OreDictionary.getOres(ingotName).get(0), 0.6f);
