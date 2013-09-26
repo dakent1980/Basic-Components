@@ -3,7 +3,6 @@ package basiccomponents;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -372,6 +371,8 @@ public class BasicComponents
 					Block block = (Block) field.get(null);
 					GameRegistry.registerBlock(block, name);
 					OreDictionary.registerOre(name, block);
+
+					String ingotName = name.replaceAll("ore", "ingot");
 					
 					if (OreDictionary.getOres(ingotName).size() > 0)
 					{
