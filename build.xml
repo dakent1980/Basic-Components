@@ -53,6 +53,12 @@
 		<!-- Copy compiled files into folders to be zipped -->
 		<copy todir="core">
 			<fileset dir="${dir.mcp}/reobf/minecraft" excludes=".git/**" />
+			
+			<fileset dir="${dir.development}resources">
+				<exclude name=".git/**"/>
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.xml"/>
+			</fileset>
 		</copy>
 		
 		<zip destfile="output/${file.core}">
